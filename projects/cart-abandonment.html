@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F7F3EB" />
+<meta name="color-scheme" content="light" />
+
+<title>Reducing cart abandonment in quick commerce · Prarthana Dalai</title>
+<meta name="description" content="A trust-first checkout strategy for quick commerce — designed to protect conversion and contribution margin." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F7F3EB'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='600' font-size='22' fill='%237B5FC4'%3EP%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../index.css" />
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" data-nav>
+  <div class="nav__inner container">
+    <a class="nav__brand" href="../index.html" aria-label="Prarthana Dalai — home">prarthana</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">
+        Résumé
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="case-page">
+  <div class="container">
+
+    <a class="case-back" href="../index.html#work">← back to all work</a>
+
+    <header class="case-hero" data-reveal>
+      <span class="case-hero__num">02</span>
+      <div class="case-hero__main">
+        <span class="case-hero__category">cart-abandonment.case</span>
+        <h1 class="case-hero__title">Reducing cart <em>abandonment</em></h1>
+        <p class="case-hero__deck">
+          Users don&rsquo;t abandon because prices are high &mdash; they abandon when prices feel <em>unpredictable</em>.
+          A trust-first checkout strategy designed to protect conversion and contribution margin.
+        </p>
+        <dl class="meta-grid">
+          <div><dt>Role</dt><dd>Product Manager · concept</dd></div>
+          <div><dt>Format</dt><dd>Strategy + experiment plan</dd></div>
+          <div><dt>Surface</dt><dd>Cart &amp; checkout</dd></div>
+          <div><dt>Status</dt><dd>Self-initiated brief</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">01 · Problem</div>
+      <div class="case-section__body">
+        <h3>The drop-off is in the last screen, not the price.</h3>
+        <p>
+          Quick commerce funnels lose a disproportionate share of users between cart and pay. Pricing audits
+          tend to focus on the headline number &mdash; but observation suggests the breakage point is somewhere
+          else: the moment when delivery, surge, and handling fees combine into a number that doesn&rsquo;t
+          match what the user expected.
+        </p>
+        <p><strong>Hypothesis:</strong> abandonment in quick commerce is a <em>trust</em> problem, not a price problem.
+          When users see a final number that exceeds the cart preview, they bounce &mdash; and they bounce harder than
+          a comparably high but predictable price would cost.</p>
+        <p><strong>Why it matters:</strong> every recovered checkout has compounding value &mdash; the user is closer
+          to becoming a habitual reorder, where retention economics work in the platform&rsquo;s favour.</p>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">02 · Approach</div>
+      <div class="case-section__body">
+        <h3>Reframe the problem as price <em>certainty</em>.</h3>
+        <ul>
+          <li><strong>North Star.</strong> Checkout Completion Rate (CCR) &mdash; % of cart-entries that finish payment within the session.</li>
+          <li><strong>Drivers.</strong> Cart-to-checkout transition rate, payment-page bounce rate, and last-step delta (cart total → final payable).</li>
+          <li><strong>Guardrails.</strong> Discount burn per order, cancellations after payment, and contribution margin per order &mdash; to ensure we don&rsquo;t buy CCR by giving away unit economics.</li>
+        </ul>
+        <p>
+          The strategy is to move surprises out of the final screen and into the cart, then label every
+          unavoidable fee with a one-line reason &mdash; so the final number feels <em>earned</em>, not sprung.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">03 · Actions</div>
+      <div class="case-section__body">
+        <h3>Three concrete interventions, sequenced.</h3>
+        <ul>
+          <li><strong>Final-payable preview in cart.</strong> Compute and display the all-in number &mdash; including delivery, surge, and handling &mdash; before the user commits to checkout. Re-run on quantity change.</li>
+          <li><strong>Fee explainers.</strong> A tap on any line item (surge, handling) reveals a one-sentence rationale. Reduces &ldquo;what is this?&rdquo; friction without arguing with the user.</li>
+          <li><strong>Phased rollout.</strong> Ship to a 10% cohort first. Compare CCR and contribution margin against control over a two-week window before widening.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">04 · Trade-offs</div>
+      <div class="case-section__body">
+        <h3>What I&rsquo;d explicitly accept &mdash; and what I wouldn&rsquo;t.</h3>
+        <ul>
+          <li><strong>Accept:</strong> a small dip in cart-add rate. Showing the full price up-front will deter some users who would have abandoned anyway. That&rsquo;s healthy.</li>
+          <li><strong>Don&rsquo;t accept:</strong> CCR gains funded by hidden discount burn. Margin per order is a hard guardrail.</li>
+          <li><strong>Watch:</strong> cancellation rate after payment. If it falls, the trust hypothesis is corroborated. If it doesn&rsquo;t move, revisit the framing.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">05 · Outcome</div>
+      <div class="case-section__body">
+        <h3>An experiment-ready plan with clear guardrails.</h3>
+        <p>
+          The deliverable is a structured strategy: a single North Star, a tight set of drivers, three
+          shippable interventions, and an explicit list of trade-offs. The intent isn&rsquo;t to predict
+          a CCR lift &mdash; it&rsquo;s to make the bet legible and the loss bounded.
+        </p>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric__value">CCR</span>
+            <span class="metric__label">Single North Star metric</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">3</span>
+            <span class="metric__label">Concrete interventions</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">3</span>
+            <span class="metric__label">Hard guardrails on margin</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <a class="case-next" href="habitify.html" data-reveal>
+      <div class="case-next__inner">
+        <span class="case-next__kicker">next case study · 03 / 03</span>
+        <span class="case-next__title">Growing Habitify from 500K to 1M downloads</span>
+      </div>
+      <span class="case-next__arrow" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">prarthana</div>
+    <nav class="footer__links" aria-label="Footer">
+      <a href="mailto:dalaiprarthana4@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/prarthana-dalai-ba931a186/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/prar_tha_naa" target="_blank" rel="noopener">Instagram</a>
+      <a href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">Résumé</a>
+    </nav>
+    <p class="footer__meta">© <span data-year>2026</span> · made with care</p>
+  </div>
+</footer>
+
+<script src="../index.js" defer></script>
+</body>
+</html>

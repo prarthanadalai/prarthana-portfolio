@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<script>document.documentElement.classList.add('js');</script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#F7F3EB" />
+<meta name="color-scheme" content="light" />
+
+<title>Distributor Management System · Prarthana Dalai</title>
+<meta name="description" content="A 0→1 enterprise DMS replacing legacy distributor workflows — adopted by Coca-Cola, Cavin Kare, Nllne, and App Passeo." />
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F7F3EB'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='600' font-size='22' fill='%237B5FC4'%3EP%3C/text%3E%3C/svg%3E" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="../index.css" />
+</head>
+
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav" data-nav>
+  <div class="nav__inner container">
+    <a class="nav__brand" href="../index.html" aria-label="Prarthana Dalai — home">prarthana</a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#experience">Experience</a>
+      <a href="../index.html#skills">Skills</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="btn btn--ghost btn--sm" href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">
+        Résumé
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="case-page">
+  <div class="container">
+
+    <a class="case-back" href="../index.html#work">← back to all work</a>
+
+    <header class="case-hero" data-reveal>
+      <span class="case-hero__num">01</span>
+      <div class="case-hero__main">
+        <span class="case-hero__category">distributor-management-system.case</span>
+        <h1 class="case-hero__title">Distributor <em>Management</em> System</h1>
+        <p class="case-hero__deck">
+          Built and shipped a modern DMS to replace legacy workflows &mdash; designed for distributor operations,
+          admin governance, and finance compliance. Adopted by four enterprise customers in the first year.
+        </p>
+        <dl class="meta-grid">
+          <div><dt>Role</dt><dd>Product Manager · 0→1 owner</dd></div>
+          <div><dt>Timeline</dt><dd>Apr 2025 — 2026</dd></div>
+          <div><dt>Team</dt><dd>2 designers · 8 engineers · QA</dd></div>
+          <div><dt>Status</dt><dd>Live · 4 enterprise customers</dd></div>
+        </dl>
+      </div>
+    </header>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">01 · Problem</div>
+      <div class="case-section__body">
+        <h3>Legacy DMS tools didn&rsquo;t fit modern distributor operations.</h3>
+        <p>
+          Salescode.ai had no internal DMS &mdash; but our SFA and eB2B customers were repeatedly asking for one.
+          Existing tools in the market were built for a different era: rigid order flows, no audit trail,
+          minimal governance, and unusable on a phone for field ops.
+        </p>
+        <p><strong>Users:</strong> distributor admins, sales heads, finance teams, and field reps &mdash;
+          mostly non-technical, often working in low-connectivity environments.</p>
+        <p><strong>Pain points:</strong> manual order tracking in spreadsheets, schemes invisible to the field,
+          no clear approval flow, and reconciliation taking days each month.</p>
+        <p><strong>Business objective:</strong> complete the enterprise sales-tech suite, unlock new revenue,
+          and protect existing accounts considering competitors.</p>
+        <p><strong>Constraints:</strong> no domain expertise in-house, parallel SFA roadmap commitments,
+          and a 4-customer rollout target inside the first year.</p>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">02 · Approach</div>
+      <div class="case-section__body">
+        <h3>Workflow-first. Role-based. <em>Adoption-led.</em></h3>
+        <ul>
+          <li><strong>Discovery.</strong> Spent four weeks shadowing distributors, sales heads, and finance teams. Mapped real-world order flow, exception patterns, and the spreadsheets people <em>actually</em> used.</li>
+          <li><strong>Prioritization.</strong> Ranked features against two questions &mdash; does it move the adoption metric, and does it survive a finance audit? Cut anything that didn&rsquo;t.</li>
+          <li><strong>Delivery.</strong> Broke the system into shippable slices: orders, schemes, approvals, reporting. Each slice rolled out behind a feature flag and validated with one pilot customer before wider release.</li>
+          <li><strong>Validation.</strong> Defined the adoption metric as <strong>% of orders fully processed in DMS</strong>, not logins. This forced us to fix workflow friction, not vanity metrics.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">03 · Decisions</div>
+      <div class="case-section__body">
+        <h3>The trade-offs that shaped the product.</h3>
+        <ul>
+          <li><strong>Invoice integrity over editability.</strong> Finance teams wanted free-form edits; we shipped immutable invoices with a corrections log instead. Slower for ops at first, but it survived the first audit cleanly.</li>
+          <li><strong>Role-based by default, not as an add-on.</strong> Every screen was scoped to a role from day one &mdash; admin, sales head, finance, field rep. No &ldquo;view-all&rdquo; backdoors.</li>
+          <li><strong>Phone-first for field, desktop-first for admin.</strong> Two distinct UI paradigms instead of one responsive compromise. Cost more to build; produced two products people actually wanted to use.</li>
+          <li><strong>Adoption metric = orders processed, not logins.</strong> Aligned the team with the customer&rsquo;s real outcome and prevented us from celebrating empty engagement.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">04 · Impact</div>
+      <div class="case-section__body">
+        <h3>Live with four enterprise customers in year one.</h3>
+        <p>
+          The DMS is now used by Coca-Cola, Cavin Kare, Nllne, and App Passeo &mdash; supporting onboarding,
+          order management, schemes, and reporting in production. Adoption metrics have held above target
+          for two consecutive quarters.
+        </p>
+        <div class="metrics">
+          <div class="metric">
+            <span class="metric__value">30–35%</span>
+            <span class="metric__label">Reduction in manual tracking</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">+40%</span>
+            <span class="metric__label">Lift in scheme &amp; sales visibility</span>
+          </div>
+          <div class="metric">
+            <span class="metric__value">4</span>
+            <span class="metric__label">Live enterprise customers</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="case-section" data-reveal>
+      <div class="case-section__label">05 · Next</div>
+      <div class="case-section__body">
+        <h3>From DMS to <em>intelligent</em> distribution.</h3>
+        <p>
+          The roadmap now folds in AI/ML enhancements &mdash; sales forecasting, outlet attrition prediction,
+          and field insights surfaced directly in the rep&rsquo;s daily flow. The thesis: a DMS that
+          tells you <em>what to do next</em> beats one that just records what happened.
+        </p>
+      </div>
+    </section>
+
+    <a class="case-next" href="cart-abandonment.html" data-reveal>
+      <div class="case-next__inner">
+        <span class="case-next__kicker">next case study · 02 / 03</span>
+        <span class="case-next__title">Reducing cart abandonment in quick commerce</span>
+      </div>
+      <span class="case-next__arrow" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+      </span>
+    </a>
+
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">prarthana</div>
+    <nav class="footer__links" aria-label="Footer">
+      <a href="mailto:dalaiprarthana4@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/prarthana-dalai-ba931a186/" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="https://www.instagram.com/prar_tha_naa" target="_blank" rel="noopener">Instagram</a>
+      <a href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">Résumé</a>
+    </nav>
+    <p class="footer__meta">© <span data-year>2026</span> · made with care</p>
+  </div>
+</footer>
+
+<script src="../index.js" defer></script>
+</body>
+</html>
