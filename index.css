@@ -167,6 +167,207 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .skip:focus { top: 16px; }
 
 /* ============================================================
+   Splash screen — first-load greeting, dismisses itself
+   ============================================================ */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: var(--paper);
+  display: grid;
+  place-items: center;
+  animation: splashOut 480ms 1500ms var(--ease-out) forwards;
+}
+.splash::after {
+  /* faint warm vignette behind the mark */
+  content: "";
+  position: absolute;
+  width: 520px; height: 520px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--lilac-soft) 0%, transparent 65%);
+  filter: blur(40px);
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+.splash__inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  animation: splashIn 520ms var(--ease-out) both;
+}
+.splash__flower {
+  font-size: 80px;
+  line-height: 1;
+  color: var(--lilac);
+  display: inline-block;
+  animation: splashSpin 5.5s linear infinite;
+  text-shadow: 0 4px 18px rgba(123, 95, 196, 0.30);
+}
+.splash__name {
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(34px, 6vw, 56px);
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1;
+}
+.splash__name em {
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-weight: 500;
+  color: var(--lilac-deep);
+}
+.splash__hint {
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-size: var(--t-md);
+  color: var(--ink-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  letter-spacing: -0.005em;
+}
+.splash__dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 6px;
+}
+.splash__dots span {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--lilac);
+  animation: splashDot 1.2s var(--ease) infinite;
+}
+.splash__dots span:nth-child(2) { animation-delay: 0.15s; }
+.splash__dots span:nth-child(3) { animation-delay: 0.30s; }
+
+.splash--gone {
+  display: none !important;
+}
+
+@keyframes splashIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes splashOut {
+  from { opacity: 1; visibility: visible; pointer-events: auto; }
+  to   { opacity: 0; visibility: hidden; pointer-events: none; }
+}
+@keyframes splashSpin {
+  to { transform: rotate(360deg); }
+}
+@keyframes splashDot {
+  0%, 100% { opacity: 0.25; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(-3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .splash             { animation-delay: 200ms; animation-duration: 200ms; }
+  .splash__inner,
+  .splash__flower,
+  .splash__dots span  { animation: none; }
+}
+
+@media (max-width: 480px) {
+  .splash__flower     { font-size: 64px; }
+  .splash__name       { font-size: 32px; }
+  .splash__hint       { font-size: var(--t-sm); }
+}
+
+/* ============================================================
+   Hero load choreography — gated behind body.is-loaded
+   so it only plays after splash dismisses
+   ============================================================ */
+
+.js .polaroid,
+.js .sticky,
+.js .scribble { opacity: 0; }
+
+.js body.is-loaded .polaroid {
+  animation: polaroid-in 900ms 100ms var(--spring) forwards;
+}
+.js body.is-loaded .sticky {
+  animation: sticky-pop 700ms var(--spring) forwards;
+}
+.js body.is-loaded .hero__sticky-1 { animation-delay: 700ms; }
+.js body.is-loaded .hero__sticky-2 { animation-delay: 880ms; }
+.js body.is-loaded .hero__sticky-3 { animation-delay: 1060ms; }
+
+.js body.is-loaded .scribble--star1,
+.js body.is-loaded .scribble--star2 {
+  animation: star-pop 700ms var(--spring) forwards;
+}
+.js body.is-loaded .scribble--star1 { animation-delay: 1100ms; }
+.js body.is-loaded .scribble--star2 { animation-delay: 1240ms; }
+
+.js body.is-loaded .scribble--squiggle,
+.js body.is-loaded .scribble--arrow1 {
+  opacity: 1;
+}
+.js body.is-loaded .scribble--squiggle path,
+.js body.is-loaded .scribble--arrow1 path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: scribble-draw 1400ms 1380ms ease forwards;
+}
+
+@keyframes polaroid-in {
+  0%   { opacity: 0; transform: rotate(18deg) translate(30px, 40px) scale(0.78); }
+  60%  { opacity: 1; transform: rotate(-5deg) translate(0, -4px) scale(1.02); }
+  100% { opacity: 1; transform: rotate(-3deg) translate(0, 0) scale(1); }
+}
+@keyframes sticky-pop {
+  0%   { opacity: 0; transform: scale(0.4) rotate(0deg); }
+  60%  { opacity: 1; transform: scale(1.08) rotate(calc(var(--sticky-rot, 0deg) * 1.15)); }
+  100% { opacity: 1; transform: scale(1) rotate(var(--sticky-rot, 0deg)); }
+}
+@keyframes star-pop {
+  0%   { opacity: 0; transform: rotate(0deg) scale(0); }
+  60%  { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1.15); }
+  100% { opacity: 1; transform: rotate(var(--rot, 0deg)) scale(1); }
+}
+.scribble--star1 { --rot: -12deg; }
+.scribble--star2 { --rot: 8deg; }
+@keyframes scribble-draw {
+  to { stroke-dashoffset: 0; }
+}
+
+/* Continuous gentle drift on stars after their entrance */
+@media (prefers-reduced-motion: no-preference) {
+  .js body.is-loaded .scribble--star1 {
+    animation: star-pop 700ms 1100ms var(--spring) forwards,
+               star-drift1 6.5s 1900ms ease-in-out infinite alternate;
+  }
+  .js body.is-loaded .scribble--star2 {
+    animation: star-pop 700ms 1240ms var(--spring) forwards,
+               star-drift2 7.5s 2050ms ease-in-out infinite alternate;
+  }
+}
+@keyframes star-drift1 {
+  from { transform: rotate(-12deg) translate(0, 0); }
+  to   { transform: rotate(-8deg)  translate(8px, -10px); }
+}
+@keyframes star-drift2 {
+  from { transform: rotate(8deg)  translate(0, 0); }
+  to   { transform: rotate(11deg) translate(-8px, -7px); }
+}
+
+/* Reduced-motion: skip the choreography, just show */
+@media (prefers-reduced-motion: reduce) {
+  .js .polaroid,
+  .js .sticky,
+  .js .scribble { opacity: 1; animation: none !important; }
+  .js .scribble path { stroke-dasharray: none; stroke-dashoffset: 0; }
+  .js .hl { background-size: 100% 100%; transition: none; }
+}
+
+/* ============================================================
    Utilities
    ============================================================ */
 
@@ -190,13 +391,20 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   font-variant-numeric: tabular-nums;
 }
 
-/* Highlighted span — like a marker */
+/* Highlighted span — like a marker, animates in when reveal fires */
 .hl {
-  background: linear-gradient(180deg, transparent 55%, var(--lilac-soft) 55%, var(--lilac-soft) 92%, transparent 92%);
+  background-image: linear-gradient(180deg, transparent 55%, var(--lilac-soft) 55%, var(--lilac-soft) 92%, transparent 92%);
+  background-repeat: no-repeat;
+  background-position: left center;
+  background-size: 100% 100%;
   padding: 0 4px;
 }
-.hl--sun { background: linear-gradient(180deg, transparent 55%, var(--sun-soft) 55%, var(--sun-soft) 92%, transparent 92%); }
-.hl--rose { background: linear-gradient(180deg, transparent 55%, var(--rose-soft) 55%, var(--rose-soft) 92%, transparent 92%); }
+.hl--sun  { background-image: linear-gradient(180deg, transparent 55%, var(--sun-soft) 55%, var(--sun-soft) 92%, transparent 92%); }
+.hl--rose { background-image: linear-gradient(180deg, transparent 55%, var(--rose-soft) 55%, var(--rose-soft) 92%, transparent 92%); }
+.js .hl   { background-size: 0% 100%; transition: background-size 900ms 200ms cubic-bezier(.55, 0, .25, 1); }
+.js [data-reveal].is-visible .hl { background-size: 100% 100%; }
+.js [data-reveal].is-visible .hl + .hl,
+.js [data-reveal].is-visible .hl ~ .hl { transition-delay: 900ms; }
 
 /* Inline link — underlined */
 .link {
@@ -603,22 +811,33 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .hero__sticky-1 {
   top: 8%;
   right: -8%;
-  transform: rotate(7deg);
+  --sticky-rot: 7deg;
+  transform: rotate(var(--sticky-rot));
   width: 170px;
 }
 .hero__sticky-2 {
   bottom: 6%;
   left: -10%;
-  transform: rotate(-6deg);
+  --sticky-rot: -6deg;
+  transform: rotate(var(--sticky-rot));
   width: 150px;
   background: var(--lilac-soft);
 }
 .hero__sticky-3 {
   top: 32%;
   left: -16%;
-  transform: rotate(-12deg);
+  --sticky-rot: -12deg;
+  transform: rotate(var(--sticky-rot));
   width: 140px;
   background: var(--rose-soft);
+}
+.sticky {
+  transition: transform 0.4s var(--spring);
+  cursor: default;
+}
+.sticky:hover {
+  transform: rotate(calc(var(--sticky-rot, 0deg) + 4deg)) scale(1.06);
+  z-index: 4;
 }
 
 /* Decorative scribbles */
@@ -1635,6 +1854,144 @@ a.role__company:hover { color: var(--ink); }
   margin-bottom: var(--s-10);
   align-items: end;
 }
+
+/* Case-page image / featured visual */
+.case-image {
+  margin: 0 auto var(--s-10);
+  max-width: 880px;
+  position: relative;
+}
+.case-image__frame {
+  position: relative;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: var(--shadow-paper);
+  transform: rotate(-0.6deg);
+  transition: transform var(--dur-3) var(--ease);
+  overflow: hidden;
+}
+.case-image__frame:hover { transform: rotate(0deg); }
+.case-image__frame::before {
+  content: "";
+  position: absolute;
+  top: -11px; left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 110px; height: 22px;
+  background: var(--sun);
+  border: 1px solid rgba(31, 26, 46, 0.10);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
+.case-image__frame img {
+  width: 100%;
+  display: block;
+  border-radius: 6px;
+  background: var(--paper-3);
+}
+.case-image__cap {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  padding-left: 14px;
+  border-left: 3px solid var(--lilac);
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  line-height: 1.5;
+  max-width: 64ch;
+}
+.case-image__cap-tag {
+  flex-shrink: 0;
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--lilac-deep);
+  font-weight: 600;
+  padding: 3px 9px;
+  border: 1.5px solid var(--lilac-deep);
+  border-radius: 999px;
+  align-self: flex-start;
+  margin-top: 1px;
+  white-space: nowrap;
+}
+
+/* Before/after comparison (cart-abandonment) */
+.case-compare {
+  margin: 0 auto var(--s-10);
+  max-width: 880px;
+  padding: var(--s-6);
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-paper);
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-5);
+}
+.case-compare::before {
+  content: "";
+  position: absolute;
+  top: -11px; left: 50%;
+  transform: translateX(-50%) rotate(-2deg);
+  width: 110px; height: 22px;
+  background: var(--sun);
+  border: 1px solid rgba(31, 26, 46, 0.10);
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  z-index: 2;
+}
+.case-compare__col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+  align-items: center;
+  padding-top: var(--s-3);
+}
+.case-compare__label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 4px 12px;
+  border: 1.5px solid currentColor;
+  border-radius: 999px;
+}
+.case-compare__label--before { color: #B53D58; }
+.case-compare__label--after  { color: var(--lilac-deep); }
+.case-compare .checkout-card {
+  transform: rotate(0deg);
+  max-width: 100%;
+  width: 100%;
+  margin: 0;
+  box-shadow: var(--shadow-sm);
+}
+.checkout-card__chip--alert {
+  background: var(--rose-soft);
+  color: #B53D58;
+}
+.case-compare__cap {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: var(--s-3);
+  padding-left: 14px;
+  border-left: 3px solid var(--lilac);
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-size: var(--t-sm);
+  color: var(--ink-2);
+  line-height: 1.5;
+}
 .case-hero__num {
   font-family: var(--font-italic);
   font-style: italic;
@@ -1996,6 +2353,12 @@ a.role__company:hover { color: var(--ink); }
   /* --- Case-study page --- */
   .case-page               { padding-top: var(--s-3); }
   .case-back               { margin-bottom: var(--s-6); }
+  .case-image              { margin-bottom: var(--s-6); }
+  .case-image__frame       { transform: rotate(0deg); padding: 10px; }
+  .case-image__frame:hover { transform: rotate(0deg); }
+  .case-image__cap         { font-size: var(--t-xs); flex-direction: column; gap: 6px; }
+  .case-compare            { grid-template-columns: 1fr; padding: var(--s-5); margin-bottom: var(--s-6); }
+  .case-compare__cap       { font-size: var(--t-xs); }
   .case-hero               { gap: var(--s-3); padding-bottom: var(--s-5); margin-bottom: var(--s-6); }
   .case-hero__num          { font-size: 80px; }
   .case-hero__title        { font-size: clamp(32px, 9vw, 56px); }
