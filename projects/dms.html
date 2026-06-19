@@ -1,190 +1,322 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<script>document.documentElement.classList.add('js');</script>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="#F7F3EB" />
-<meta name="color-scheme" content="light" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Distributor Management System · Case Study · Prarthana Dalai</title>
+<meta name="description" content="0→1 Distributor Management System for B2B FMCG — discovery, the trade-offs that shaped it, the pilot that went wrong, and the adoption metric that couldn't be gamed.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* paper */
+    --paper:#F7F3EB; --paper-2:#FFFCF6; --paper-3:#EDE6D5; --paper-4:#E1D8C2;
+    /* ink */
+    --ink:#1F1A2E; --ink-2:#4A4358; --ink-3:#8B8497; --ink-4:#BAB3C0;
+    /* lilac */
+    --lilac:#7B5FC4; --lilac-deep:#5A3FA8; --lilac-soft:#E5D8F2; --lilac-tint:#F4ECFA;
+    /* sticky tints */
+    --sun:#F5D67D; --sun-soft:#FCEEC2; --rose:#FFB5C5; --rose-soft:#FCDFE7; --mint:#A8D5B8; --mint-soft:#DBEEDF;
+    /* borders */
+    --border:#D9D0BC; --border-soft:#E8E0CB;
+    /* fonts */
+    --font-body:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-italic:'Lora',Georgia,"Times New Roman",serif;
+    --font-mono:'JetBrains Mono',ui-monospace,"SF Mono",Menlo,monospace;
+    --font-hand:'Caveat',"Comic Sans MS",cursive;
+    --shadow-paper:0 1px 0 rgba(31,26,46,.06),0 4px 12px -4px rgba(31,26,46,.10),0 12px 32px -12px rgba(31,26,46,.10);
+    --ease:cubic-bezier(.22,.61,.36,1); --dur-2:360ms;
+    --col:760px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--ink-2);
+    line-height:1.62;-webkit-font-smoothing:antialiased;font-size:17px;letter-spacing:-.01em;
+    font-feature-settings:"ss01","cv11";position:relative;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.16  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .col{max-width:var(--col);margin:0 auto;padding:0 26px;position:relative;z-index:2}
+  .serif{font-family:var(--font-italic)}
+  em,.it{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep)}
 
-<title>Distributor Management System · Prarthana Dalai</title>
-<meta name="description" content="A 0→1 enterprise DMS replacing legacy distributor workflows — adopted by Coca-Cola, Cavin Kare, Nllne, and App Passeo." />
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(247,243,235,.82);
+    backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1.5px dashed var(--border);}
+  .topbar .row{max-width:1160px;margin:0 auto;padding:14px 26px;display:flex;align-items:center;gap:18px;position:relative;z-index:2}
+  .back{font-size:14px;color:var(--ink);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:7px;transition:color var(--dur-2) var(--ease)}
+  .back:hover{color:var(--lilac-deep)}
+  .topbar .sp{flex:1}
+  .topbar .mark{font-family:var(--font-italic);font-style:italic;font-size:18px;color:var(--ink)}
+  .topbar .cta{font-size:13px;text-decoration:none;color:var(--ink);font-weight:600;background:var(--paper-2);
+    border:1.5px solid var(--ink);padding:7px 16px;border-radius:999px;transition:all var(--dur-2) var(--ease)}
+  .topbar .cta:hover{background:var(--lilac-tint);border-color:var(--lilac);color:var(--lilac-deep)}
 
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23F7F3EB'/%3E%3Ctext x='16' y='24' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='600' font-size='22' fill='%237B5FC4'%3EP%3C/text%3E%3C/svg%3E" />
+  /* hero */
+  .hero{padding:64px 0 26px}
+  .kicker{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:20px}
+  .kicker b{color:var(--lilac-deep);font-weight:600}
+  h1{font-family:var(--font-body);font-weight:700;font-size:clamp(38px,6vw,62px);line-height:1.0;letter-spacing:-.035em;color:var(--ink);text-wrap:balance}
+  h1 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .lede{margin-top:22px;font-size:20px;color:var(--ink-2);line-height:1.55;text-wrap:pretty}
+  .lede b{color:var(--ink);font-weight:600}
 
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet" />
+  /* meta strip */
+  .meta{max-width:1160px;margin:38px auto 0;padding:0 26px;position:relative;z-index:2}
+  .meta-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);
+    border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  @media(max-width:680px){.meta-in{grid-template-columns:repeat(2,1fr)}}
+  .meta-c{background:var(--paper-2);padding:16px 18px}
+  .meta-c .l{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lilac-deep);font-weight:600}
+  .meta-c .v{font-family:var(--font-body);font-weight:600;font-size:15px;margin-top:6px;line-height:1.35;color:var(--ink)}
 
-<link rel="stylesheet" href="../index.css" />
+  /* tldr */
+  .tldr{max-width:1160px;margin:18px auto 0;padding:0 26px;position:relative;z-index:2}
+  .tldr-in{background:var(--lilac-tint);border:1.5px solid var(--lilac-soft);border-radius:14px;padding:22px 24px;
+    display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+  @media(max-width:680px){.tldr-in{grid-template-columns:1fr}}
+  .tldr .tag{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep);font-size:18px;white-space:nowrap}
+  .tldr p{font-size:16px;color:var(--ink-2);line-height:1.6}
+  .tldr p b{color:var(--ink);font-weight:600}
+
+  /* stat band */
+  .band{max-width:1160px;margin:46px auto;padding:0 26px;position:relative;z-index:2}
+  .band-in{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:760px){.band-in{grid-template-columns:repeat(2,1fr);gap:28px}}
+  .stat .n{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:clamp(30px,3.4vw,46px);line-height:1;color:var(--lilac-deep);letter-spacing:-.02em}
+  .stat .c{margin-top:9px;font-size:13.5px;color:var(--ink-2);line-height:1.4}
+
+  /* section */
+  section{padding:30px 0}
+  .slabel{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:14px}
+  .slabel b{color:var(--lilac-deep);font-weight:600}
+  h2{font-family:var(--font-body);font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.06;letter-spacing:-.03em;margin-bottom:18px;color:var(--ink);text-wrap:balance}
+  h2 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  p.body{font-size:17px;color:var(--ink-2);margin-bottom:16px}
+  p.body b{color:var(--ink);font-weight:600}
+  .body a{color:var(--lilac-deep);border-bottom:1.5px solid var(--lilac);padding-bottom:1px}
+  hr.rule{border:none;border-top:1.5px dashed var(--border);max-width:var(--col);margin:8px auto}
+
+  /* decisions */
+  .dlist{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .d{border:1.5px solid var(--ink);background:var(--paper-2);border-radius:14px;padding:20px 22px;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .d:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--lilac)}
+  .d .num{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.10em;color:var(--lilac-deep);font-size:11px;font-weight:600}
+  .d h3{font-family:var(--font-body);font-weight:700;font-size:20px;margin:8px 0;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+  .d p{font-size:15.5px;color:var(--ink-2)}
+  .d p b{color:var(--ink);font-weight:600}
+
+  /* pull quote */
+  .pull{max-width:880px;margin:30px auto;padding:0 26px}
+  .pull blockquote{font-family:var(--font-italic);font-weight:500;font-style:italic;font-size:clamp(24px,3.4vw,32px);
+    line-height:1.32;color:var(--ink);border-left:4px solid var(--lilac);padding:6px 0 6px 26px}
+  .pull cite{display:block;margin-top:14px;font-family:var(--font-mono);font-style:normal;font-size:12.5px;letter-spacing:.04em;color:var(--ink-3);font-weight:500;padding-left:30px}
+
+  /* figure / wireframe embed */
+  .figure{max-width:1340px;margin:34px auto;padding:0 22px;position:relative;z-index:2}
+  .figure .frame{border:1.5px solid var(--ink);border-radius:16px;overflow:hidden;background:var(--paper-2);box-shadow:var(--shadow-paper)}
+  .figure iframe{width:100%;height:1200px;border:0;display:block;background:#F5F6FB}
+  @media(max-width:1140px){.figure iframe{height:1760px}}
+  .figure .cap{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);margin-top:14px;text-align:center;letter-spacing:.02em}
+  .figure .cap b{color:var(--ink-2)}
+
+  /* scorecard */
+  .score{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px}
+  @media(max-width:680px){.score{grid-template-columns:1fr}}
+  .sc{border:1.5px solid var(--ink);background:var(--paper-2);border-radius:14px;padding:20px 22px;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .sc:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+  .sc .q{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.08em;font-size:11px;color:var(--lilac-deep);font-weight:600;margin-bottom:10px}
+  .sc p{font-size:15px;color:var(--ink-2)}
+  .sc p b{color:var(--ink);font-weight:600}
+
+  /* next / clients */
+  .clients{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px}
+  .client{font-family:var(--font-body);font-weight:500;font-size:14px;border:1.5px solid var(--ink);background:var(--paper-2);
+    border-radius:999px;padding:7px 16px;color:var(--ink)}
+
+  /* next case */
+  .casenext{position:relative;z-index:2;max-width:var(--col);margin:40px auto 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+    padding:28px 30px;background:var(--paper-2);border:1.5px solid var(--ink);border-radius:14px;text-decoration:none;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .casenext:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--lilac)}
+  .casenext .k{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--lilac-deep);font-weight:600}
+  .casenext .t{font-family:var(--font-body);font-weight:700;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.02em;line-height:1.12;color:var(--ink);margin-top:6px}
+  .casenext .arr{width:54px;height:54px;display:grid;place-items:center;background:var(--ink);color:var(--paper);border-radius:50%;flex:none;transition:all var(--dur-2) var(--ease)}
+  .casenext:hover .arr{background:var(--lilac);transform:translate(4px,-2px) rotate(-8deg)}
+  @media(max-width:680px){.casenext{grid-template-columns:1fr;padding:20px}.casenext .arr{width:44px;height:44px}}
+
+  /* footer */
+  .foot{border-top:1.5px dashed var(--border);margin-top:40px;padding:40px 0 60px;text-align:center}
+  .foot a{color:var(--lilac-deep);text-decoration:none;font-weight:600;transition:color var(--dur-2) var(--ease)}
+  .foot a:hover{color:var(--ink)}
+  .foot .big{font-family:var(--font-body);font-weight:700;font-size:28px;margin-bottom:14px;color:var(--ink);letter-spacing:-.02em}
+  .foot .big em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .foot .links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:14px}
+  .flower{color:var(--lilac)}
+</style>
 </head>
-
 <body>
 
-<a class="skip" href="#main">Skip to content</a>
+  <div class="topbar"><div class="row">
+    <a class="back" href="../index.html">← <span>All work</span></a>
+    <span class="sp"></span>
+    <span class="mark">Prarthana ✿</span>
+    <span class="sp"></span>
+    <a class="cta" href="../index.html#contact">Get in touch</a>
+  </div></div>
 
-<header class="nav" data-nav>
-  <div class="nav__inner container">
-    <a class="nav__brand" href="../index.html" aria-label="Prarthana Dalai — home">prarthana</a>
-    <nav class="nav__links" aria-label="Primary">
-      <a href="../index.html#work">Work</a>
-      <a href="../index.html#about">About</a>
-      <a href="../index.html#experience">Experience</a>
-      <a href="../index.html#skills">Skills</a>
-      <a href="../index.html#contact">Contact</a>
-    </nav>
-    <div class="nav__actions">
-      <a class="btn btn--ghost btn--sm" href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">
-        Résumé
-        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
-      </a>
+  <!-- HERO -->
+  <header class="hero"><div class="col">
+    <div class="kicker">case study · <b>01</b> &nbsp;·&nbsp; salescode.ai &nbsp;·&nbsp; b2b fmcg distribution</div>
+    <h1>A modern DMS for the field, the office,<br>and <em>finance.</em></h1>
+    <p class="lede">Salescode never planned to build a Distributor Management System. It kept <b>losing enterprise deals</b> without one. I owned the 0→1 build — discovery to launch — and measured success by the one number that can't be faked: <b>the share of orders processed end-to-end in the system.</b></p>
+  </div></header>
+
+  <!-- META -->
+  <div class="meta"><div class="meta-in">
+    <div class="meta-c"><div class="l">My role</div><div class="v">Product Manager — sole PM &amp; owner</div></div>
+    <div class="meta-c"><div class="l">Timeline</div><div class="v">2025 – 2026 · 0→1</div></div>
+    <div class="meta-c"><div class="l">Team</div><div class="v">Eng, design &amp; BAs (led)</div></div>
+    <div class="meta-c"><div class="l">Status</div><div class="v">Live · 4 enterprise customers</div></div>
+  </div></div>
+
+  <!-- TLDR -->
+  <div class="tldr"><div class="tldr-in">
+    <div class="tag">in one breath ✿</div>
+    <p>I took a category Salescode had never built — with <b>no public playbook to copy</b> (no G2 pages, no teardowns) — from primary research to a shipped product live with Coca-Cola, Cavin Kare, NIIne and App Passeo. The hardest lesson wasn't technical: our <b>cleaner UI was rejected by the people who'd use it most</b>, and fixing that reshaped how I think about "better."</p>
+  </div></div>
+
+  <!-- STAT BAND -->
+  <div class="band"><div class="band-in">
+    <div class="stat"><div class="n">4</div><div class="c">enterprise customers live in year one</div></div>
+    <div class="stat"><div class="n">30–35%</div><div class="c">reduction in manual order tracking</div></div>
+    <div class="stat"><div class="n">+40%</div><div class="c">lift in scheme &amp; sales visibility</div></div>
+    <div class="stat"><div class="n">2 qtrs</div><div class="c">adoption held above target, post-launch</div></div>
+  </div></div>
+
+  <hr class="rule">
+
+  <!-- 01 CONTEXT -->
+  <section><div class="col">
+    <div class="slabel">the context · <b>01</b></div>
+    <h2>A gap that was <em>costing deals.</em></h2>
+    <p class="body">Salescode had a strong Sales Force Automation and eB2B product. But enterprise FMCG buyers increasingly wanted <b>one vendor for the whole chain</b> — SFA, eB2B <em>and</em> a Distributor Management System. Without a DMS, we were losing deals we should have won.</p>
+    <p class="body">The catch: DMS isn't a well-documented category. There were no comparison pages, no public teardowns, no competitor demos to learn from. <b>The product intelligence simply wasn't out there to borrow.</b> Whatever we built would have to come from primary research — from sitting with the people who run distribution every day.</p>
+  </div></section>
+
+  <!-- 02 DISCOVERY -->
+  <section><div class="col">
+    <div class="slabel">discovery · <b>02</b></div>
+    <h2>Four weeks <em>inside the workflow.</em></h2>
+    <p class="body">I spent four weeks embedded with distributors, sales heads, regional managers and finance teams. What I found mattered more than any feature list:</p>
+    <p class="body">The real system was <b>Excel + WhatsApp + phone calls</b>. Distributors weren't intimidated by software — they were <b>fluent in dense, tabular interfaces</b> and fast in them. Finance needed audit trails, not flexibility. Field reps needed scheme visibility in <b>low-connectivity</b> environments. And sales heads were quietly exhausted from being <em>human middleware</em> — relaying orders, approvals and corrections by hand.</p>
+  </div></section>
+
+  <!-- 03 DECISIONS -->
+  <section><div class="col">
+    <div class="slabel">decisions · <b>03</b></div>
+    <h2>Four trade-offs that <em>shaped the product.</em></h2>
+    <p class="body">0→1 is mostly choosing what <em>not</em> to do. These four calls defined the build:</p>
+    <div class="dlist">
+      <div class="d"><div class="num">decision 01</div><h3>Invoice integrity over editability</h3>
+        <p>Finance lives or dies on trust. I made invoices <b>immutable, with a corrections log</b> — never free-form edits. Slightly less convenient, dramatically more auditable. A system finance could actually sign off on.</p></div>
+      <div class="d"><div class="num">decision 02</div><h3>Role-based access from day one</h3>
+        <p>Permissions bolted on later become a security debt you never repay. I designed the product <b>role-first</b> — distributor, rep, sales head, finance — so governance was structural, not an afterthought.</p></div>
+      <div class="d"><div class="num">decision 03</div><h3>Two paradigms, not one compromise</h3>
+        <p>Field reps and back-office staff don't work the same way. Rather than force a single responsive layout, I committed to <b>phone-first for the field, desktop-first for admin and finance</b> — each surface true to its user.</p></div>
+      <div class="d"><div class="num">decision 04</div><h3>Adoption = orders fully processed</h3>
+        <p>Logins and DAU are vanity — easy to hit, easy to fake. I defined adoption as <b>the percentage of orders processed end-to-end in the DMS</b>. You can't game it without actually using the product the way it's meant to be used.</p></div>
     </div>
+  </div></section>
+
+  <!-- 04 CAVIN KARE -->
+  <section><div class="col">
+    <div class="slabel">the moment we got it wrong · <b>04</b></div>
+    <h2>The pilot that <em>rejected our best work.</em></h2>
+    <p class="body">Cavin Kare was our first pilot. The feedback was blunt — and it stung, because it targeted the thing we were proudest of: <b>the clean, modern UI</b>.</p>
+  </div></section>
+
+  <div class="pull">
+    <blockquote>“It looks nicer. But it's slower. Give me back the dense grid — I know exactly where everything is.”</blockquote>
+    <cite>— paraphrased from Cavin Kare pilot feedback</cite>
   </div>
-</header>
 
-<main id="main" class="case-page">
-  <div class="container">
+  <section><div class="col">
+    <p class="body">Two things had gone wrong. First, in chasing <b>feature parity</b> with the legacy DMS, we'd made several transactional flows more complex than they needed to be. Second — and this was the deeper miss — we'd assumed a cleaner interface was an <em>upgrade</em>. For power users entering 50–80 line orders a day, all that whitespace was friction. <b>Density wasn't the problem. Density was the feature.</b></p>
+    <p class="body">I didn't pick a side. We did <b>both</b>: simplified the critical transactional flows (order entry, scheme application, approval), <em>and</em> shipped a <b>Classic / Density mode</b> — a tabular, keyboard-friendly power-user view that sits alongside the cleaner default and toggles per user. Below is that resolution, on the Create New Order screen — the same order, built two ways:</p>
+  </div></section>
 
-    <a class="case-back" href="../index.html#work">← back to all work</a>
+  <!-- WIREFRAME EMBED -->
+  <figure class="figure">
+    <div class="frame"><iframe id="wffr" title="Create New Order — Modern vs Classic wireframe" scrolling="no"></iframe></div>
+    <figcaption class="cap"><b>Medium-fidelity wireframe</b> — recreated for portfolio purposes, not the production screen (withheld under NDA). Same customer, same cart, two rendering modes.</figcaption>
+  </figure>
+  <script>document.getElementById('wffr').srcdoc = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"UTF-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n<title>Relay DMS \u2014 Create New Order \u00b7 Modern vs Classic</title>\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap\" rel=\"stylesheet\">\n<style>\n  :root{\n    --brand:#3730A3; --brand-2:#4F46E5; --brand-soft:#EEF0FB; --brand-line:#DADFF6;\n    --amber:#C77E16; --amber-soft:#FBF0DD;\n    --green:#1F8A5B; --green-soft:#E4F4EC;\n    --ink:#1B2030; --slate:#5C6479; --muted:#8B92A6;\n    --line:#E6E8F2; --line-2:#EEF0F6; --bg:#F5F6FB; --paper:#FFFFFF; --zebra:#F8F9FD;\n    --shadow:0 1px 2px rgba(27,32,48,.04), 0 10px 34px rgba(27,32,48,.09);\n    --shadow-sm:0 1px 2px rgba(27,32,48,.06);\n  }\n  *{box-sizing:border-box;margin:0;padding:0}\n  body{font-family:'Inter',system-ui,sans-serif;color:var(--ink);line-height:1.5;-webkit-font-smoothing:antialiased;\n    background:radial-gradient(900px 480px at 8% -8%,#E9ECFB 0,transparent 60%),radial-gradient(820px 480px at 100% -4%,#F6EEE0 0,transparent 55%),var(--bg);\n    padding:46px 28px 60px}\n  .wrap{max-width:1400px;margin:0 auto}\n\n  .eyebrow{font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;letter-spacing:.18em;\n    text-transform:uppercase;color:var(--amber);display:flex;align-items:center;gap:10px;margin-bottom:13px}\n  .eyebrow::before{content:\"\";width:26px;height:2px;background:var(--amber)}\n  h1{font-family:'Space Grotesk',sans-serif;font-size:36px;line-height:1.08;font-weight:700;color:var(--brand);letter-spacing:-.02em}\n  .sub{margin-top:12px;color:var(--slate);font-size:15.5px}\n  .sub b{color:var(--ink);font-weight:600}\n  .toggle-row{display:flex;align-items:center;gap:14px;margin:24px 0 20px;flex-wrap:wrap}\n  .switch{display:inline-flex;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px;box-shadow:var(--shadow-sm)}\n  .switch span{font-size:13px;font-weight:600;padding:7px 16px;border-radius:7px;color:var(--slate)}\n  .switch .on{background:var(--brand);color:#fff}\n  .toggle-note{font-size:13px;color:var(--muted)}\n\n  .grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}\n  @media (max-width:1140px){.grid{grid-template-columns:1fr}}\n  .panel-tag{display:flex;align-items:baseline;gap:9px;margin-bottom:11px}\n  .panel-tag .k{font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase}\n  .panel-tag .v{font-size:13px;color:var(--slate)}\n  .tag-modern .k{color:var(--brand)} .tag-classic .k{color:var(--amber)}\n\n  /* app shell \u2014 identical both sides */\n  .app{background:var(--paper);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}\n  .chrome{height:34px;background:#EEF0F6;border-bottom:1px solid var(--line);display:flex;align-items:center;padding:0 13px;gap:7px;flex:none}\n  .dot{width:9px;height:9px;border-radius:50%}.dot.r{background:#E66A5A}.dot.y{background:#E7B64B}.dot.g{background:#4FB477}\n  .urlbar{margin-left:10px;height:20px;flex:1;background:#fff;border:1px solid var(--line);border-radius:6px;display:flex;align-items:center;padding:0 10px;font-size:11px;color:var(--muted)}\n\n  .topbar{display:flex;align-items:center;gap:11px;padding:11px 14px;border-bottom:1px solid var(--line-2);flex:none;height:54px}\n  .brand{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:15px;color:var(--brand);letter-spacing:-.01em}\n  .brand .mk{width:24px;height:24px;border-radius:7px;background:linear-gradient(135deg,var(--brand),var(--brand-2));display:flex;align-items:center;justify-content:center}\n  .brand .mk svg{width:13px;height:13px}\n  .crumb{font-size:12px;color:var(--muted);white-space:nowrap}.crumb b{color:var(--slate);font-weight:600}\n  .spacer{flex:1}\n  .pill-input{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;color:var(--muted);font-size:11.5px;background:#fff;white-space:nowrap}\n  .mini-switch{display:inline-flex;border:1px solid var(--line);border-radius:8px;overflow:hidden;font-size:11px;flex:none}\n  .mini-switch b{padding:5px 11px;font-weight:600;color:var(--slate)}\n  .mini-switch .act{background:var(--brand);color:#fff}.mini-switch .act-am{background:var(--amber);color:#fff}\n\n  .body{display:flex;height:540px}\n  .rail{width:48px;border-right:1px solid var(--line-2);background:#FBFBFE;padding:12px 0;display:flex;flex-direction:column;align-items:center;gap:5px;flex:none}\n  .nav{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;color:var(--muted)}\n  .nav svg{width:17px;height:17px}.nav.sel{background:var(--brand-soft);color:var(--brand)}\n  .rail .gap{flex:1}\n  .avatar{width:27px;height:27px;border-radius:50%;background:var(--amber-soft);color:var(--amber);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center}\n  .main{flex:1;display:flex;flex-direction:column;min-width:0}\n\n  /* customer context strip \u2014 anchors this as Create New Order */\n  .cust{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line-2);flex:none;height:56px;flex-wrap:wrap;overflow:hidden}\n  .cust .cc{font-size:11px;color:var(--slate);background:#FCFCFE;border:1px solid var(--line);border-radius:7px;padding:5px 9px;white-space:nowrap}\n  .cust .cc b{color:var(--ink);font-weight:600}\n  .cust .edit{font-size:11px;color:var(--brand);font-weight:600;margin-left:auto;white-space:nowrap}\n\n  /* filter row */\n  .tabs{display:flex;align-items:center;gap:7px;padding:9px 14px;border-bottom:1px solid var(--line-2);flex:none;height:42px}\n  .chip{font-size:11px;border:1px solid var(--line);border-radius:6px;padding:4px 9px;color:var(--slate);background:#FCFCFE;white-space:nowrap}\n  .chip.on{border-color:var(--brand-line);color:var(--brand);background:var(--brand-soft);font-weight:600}\n  .chip.am{border-color:var(--amber);color:var(--amber);background:var(--amber-soft);font-weight:600}\n  .tabs .spacer{flex:1}\n\n  .scroll{flex:1;overflow:auto;padding:13px}\n  .scroll.nopad{padding:0}\n\n  /* cart bar \u2014 same in both (same order) */\n  .botbar{display:flex;align-items:center;gap:16px;padding:10px 14px;border-top:1px solid var(--line);background:#FBFBFE;flex:none;height:54px}\n  .botbar .ci{position:relative;width:32px;height:32px;border-radius:9px;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;color:var(--brand)}\n  .botbar .ci svg{width:17px;height:17px}\n  .botbar .ci .bdg{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:var(--amber);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px}\n  .botbar .m{font-size:10.5px;color:var(--muted)}\n  .botbar .m b{display:block;font-size:13px;color:var(--ink);font-weight:700;font-family:'Space Grotesk';margin-top:1px}\n  .botbar .spacer{flex:1}\n  .cta{background:var(--brand);color:#fff;border:none;border-radius:8px;padding:9px 17px;font-size:12.5px;font-weight:700;font-family:inherit;display:flex;align-items:center;gap:7px}\n  .cta.am{background:var(--amber)} .cta svg{width:13px;height:13px}\n\n  /* MODERN cards */\n  .cards{display:grid;grid-template-columns:1fr 1fr;gap:11px}\n  .pc{border:1px solid var(--line);border-radius:11px;padding:12px;background:#fff;position:relative}\n  .ribbon{position:absolute;top:9px;left:9px;background:var(--amber);color:#fff;font-size:9px;font-weight:700;padding:3px 7px;border-radius:20px}\n  .pthumb{height:62px;border-radius:8px;background:linear-gradient(135deg,#F1F4FB,#E5EAF6);margin-bottom:9px;display:flex;align-items:center;justify-content:center}\n  .pthumb svg{height:50px;width:auto;filter:drop-shadow(0 2px 3px rgba(27,32,48,.12))}\n  .pn{font-size:12.5px;font-weight:600;line-height:1.25;min-height:31px}\n  .psz{font-size:10.5px;color:var(--muted);margin-top:2px}\n  .ptr{font-size:12px;font-weight:700;color:var(--ink);margin-top:7px}\n  .ptr .mrp{font-weight:400;color:var(--muted);text-decoration:line-through;font-size:10.5px;margin-left:6px}\n  .pricerow{display:flex;gap:6px;margin-top:8px}\n  .pchip{flex:1;border:1px solid var(--line);border-radius:6px;padding:4px 6px;text-align:center;font-size:10.5px;font-weight:600;font-variant-numeric:tabular-nums}\n  .pchip u{display:block;color:var(--muted);text-decoration:none;font-size:8px;font-weight:500;letter-spacing:.04em}\n  .actrow{display:flex;gap:6px;margin-top:9px}\n  .add{flex:1;background:var(--brand);color:#fff;border:none;border-radius:7px;padding:7px;font-size:11.5px;font-weight:600;font-family:inherit;line-height:1.1}\n  .add u{display:block;text-decoration:none;font-size:8px;font-weight:500;opacity:.85}\n  .stp{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden;flex:none}\n  .stp .b{width:22px;height:31px;display:flex;align-items:center;justify-content:center;color:var(--slate);font-weight:600;font-size:13px}\n  .stp .q{width:26px;text-align:center;font-size:11.5px;font-weight:600;border-left:1px solid var(--line);border-right:1px solid var(--line);line-height:31px}\n\n  /* CLASSIC dense grid */\n  table{width:100%;border-collapse:collapse;font-size:11.5px}\n  thead th{position:sticky;top:0;background:#EEF0F6;color:var(--brand);font-weight:700;text-align:left;padding:8px 9px;border-bottom:1.5px solid #D8DCEC;white-space:nowrap;font-size:10px;letter-spacing:.04em;text-transform:uppercase}\n  thead th.num,tbody td.num{text-align:right}\n  tbody td{padding:6px 9px;border-bottom:1px solid var(--line-2);white-space:nowrap;vertical-align:middle}\n  tbody tr:nth-child(even){background:var(--zebra)}\n  .sku{font-variant-numeric:tabular-nums;color:var(--muted);font-size:10px}\n  .pname{font-weight:500}\n  .qin{display:inline-block;min-width:28px;text-align:right;border:1px solid var(--line);border-radius:5px;padding:2px 6px;background:#fff;font-weight:600;font-variant-numeric:tabular-nums}\n  .qin.focus{border-color:var(--brand);box-shadow:0 0 0 2px rgba(55,48,163,.14)}\n  .un{color:var(--muted);font-size:9px;margin-left:3px}\n  .sch{color:var(--amber);font-weight:600;font-size:10.5px}\n  .free{color:var(--green);font-weight:700;font-variant-numeric:tabular-nums}\n  .val{font-weight:600;font-variant-numeric:tabular-nums}\n  .pager{display:flex;align-items:center;gap:8px;padding:7px 12px;font-size:11px;color:var(--muted);border-top:1px solid var(--line-2)}\n\n  .callout{display:flex;gap:9px;margin-top:13px;align-items:flex-start}\n  .callout .pin{flex:none;width:18px;height:18px;border-radius:50%;color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-top:1px;background:var(--brand)}\n  .callout.am .pin{background:var(--amber)}\n  .callout p{font-size:12.5px;color:var(--slate)}.callout p b{color:var(--ink)}\n\n  .lesson{margin-top:32px;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:var(--shadow);background:var(--paper)}\n  .lesson-bar{height:4px;background:linear-gradient(90deg,var(--brand),var(--amber))}\n  .lesson-in{padding:23px 26px;display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center}\n  @media(max-width:680px){.lesson-in{grid-template-columns:1fr}}\n  .lesson .num{font-family:'Space Grotesk',sans-serif;font-size:13px;font-weight:700;color:var(--amber);letter-spacing:.13em;text-transform:uppercase;white-space:nowrap}\n  .lesson h3{font-family:'Space Grotesk',sans-serif;font-size:18px;color:var(--brand);margin-bottom:7px;letter-spacing:-.01em}\n  .lesson p{color:var(--slate);font-size:14.5px;max-width:820px}.lesson p b{color:var(--ink);font-weight:600}\n  .foot{margin-top:24px;font-size:11.5px;color:var(--muted);text-align:center}.foot b{color:var(--slate)}\n  .nda{margin-top:16px;display:flex;align-items:center;gap:10px;background:var(--amber-soft);border:1px solid #EAD9B6;\n    border-radius:10px;padding:12px 16px;font-size:12.5px;color:#7A5A1E;line-height:1.45}\n  .nda b{color:#5E450F;font-weight:700}\n  .nda-i{flex:none;width:16px;height:16px;color:#B5862B}\n</style>\n</head>\n<body>\n<div class=\"wrap\">\n\n  <div class=\"eyebrow\">DMS Case Study \u00b7 Wireframe 01 \u00b7 Create New Order</div>\n  <h1>One feature, two ways to use it.</h1>\n  <p class=\"sub\">The same screen \u2014 <b>Create New Order</b> \u2014 rendered two ways. A clean card view on the left (the default the Cavin Kare pilot rejected) and a Classic / Density grid on the right (what high-volume distributors wanted). Same customer, same catalog, same cart \u2014 toggled per user. We shipped <b>both</b>.</p>\n\n  <div class=\"nda\"><svg class=\"nda-i\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M12 11v5\"/><circle cx=\"12\" cy=\"7.6\" r=\".6\" fill=\"currentColor\"/></svg><span>These are <b>medium-fidelity wireframes</b> recreated for portfolio purposes \u2014 they illustrate the design thinking and layout logic, not the exact production screens, which are withheld under NDA. Branding, palette, catalog and data are fictional.</span></div>\n\n  <div class=\"toggle-row\">\n    <div class=\"switch\"><span class=\"on\">Modern</span><span>Classic</span></div>\n    <span class=\"toggle-note\">\u2191 one per-user setting \u00b7 both panels are the same order being built</span>\n  </div>\n\n  <div class=\"grid\">\n\n    <!-- MODERN -->\n    <div>\n      <div class=\"panel-tag tag-modern\"><span class=\"k\">Modern</span><span class=\"v\">\u2014 the default that was rejected</span></div>\n      <div class=\"app\">\n        <div class=\"chrome\"><span class=\"dot r\"></span><span class=\"dot y\"></span><span class=\"dot g\"></span><div class=\"urlbar\">app.relaydms.io \u00b7 Sale \u203a Create new order</div></div>\n        <div class=\"topbar\">\n          <div class=\"brand\"><span class=\"mk\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12h13M13 6l6 6-6 6\"/></svg></span>Relay</div>\n          <span class=\"crumb\">Sale \u203a <b>New order</b></span><span class=\"spacer\"></span>\n          <span class=\"mini-switch\"><b class=\"act\">Modern</b><b>Classic</b></span>\n          <span class=\"pill-input\">\u2315 Search</span>\n        </div>\n        <div class=\"body\">\n          <nav class=\"rail\">\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 11l9-8 9 8M5 10v10h14V10\"/></svg></div>\n            <div class=\"nav sel\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.4\"/><circle cx=\"18\" cy=\"20\" r=\"1.4\"/><path d=\"M2 3h3l2.6 13h11\"/><path d=\"M5.4 6h15l-1.5 8H7\"/></svg></div>\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 9h18M9 4v16\"/></svg></div>\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"2\"/><path d=\"M8 8h8M8 12h8M8 16h5\"/></svg></div>\n            <div class=\"gap\"></div><span class=\"avatar\">SD</span>\n          </nav>\n          <div class=\"main\">\n            <div class=\"cust\">\n              <span class=\"cc\"><b>R K Groceries</b></span><span class=\"cc\">Direct sales</span><span class=\"cc\">Channel \u00b7 Groceries</span><span class=\"cc\">Deliver <b>04 Aug</b></span><span class=\"edit\">Edit details</span>\n            </div>\n            <div class=\"tabs\">\n              <span class=\"chip on\">Juices</span><span class=\"chip\">Sparkling</span><span class=\"chip\">Soft drink</span><span class=\"chip\">Personal care</span><span class=\"chip\">In-scheme</span>\n            </div>\n            <div class=\"scroll\">\n              <div class=\"cards\">\n                <div class=\"pc\"><span class=\"ribbon\">Up to 18% off</span><div class=\"pthumb\"><svg viewBox=\"0 0 32 44\"><rect x=\"12\" y=\"2\" width=\"8\" height=\"5\" rx=\"1\" fill=\"#9C6B1E\"/><path d=\"M13 7h6v3l3 4v24a3 3 0 0 1-3 3h-6a3 3 0 0 1-3-3V14l3-4z\" fill=\"#E59A2B\"/><rect x=\"9.5\" y=\"19\" width=\"13\" height=\"12\" rx=\"1.5\" fill=\"#fff\" opacity=\".9\"/><rect x=\"11.5\" y=\"22\" width=\"9\" height=\"2\" rx=\"1\" fill=\"#E59A2B\"/><rect x=\"11.5\" y=\"26\" width=\"6\" height=\"1.6\" rx=\".8\" fill=\"#C9892440\"/></svg></div><div class=\"pn\">Zesti Mango Nectar 500ml</div><div class=\"psz\">case of 24</div><div class=\"ptr\">PTR \u20b973<span class=\"mrp\">\u20b980</span></div><div class=\"pricerow\"><span class=\"pchip\">\u20b9730<u>/CS</u></span><span class=\"pchip\">\u20b973<u>/PC</u></span></div><div class=\"actrow\"><button class=\"add\">Add<u>24 units</u></button><div class=\"stp\"><span class=\"b\">\u2013</span><span class=\"q\">1</span><span class=\"b\">+</span></div></div></div>\n                <div class=\"pc\"><span class=\"ribbon\">Up to 18% off</span><div class=\"pthumb\"><svg viewBox=\"0 0 32 44\"><rect x=\"13\" y=\"2\" width=\"6\" height=\"4\" rx=\"1\" fill=\"#6B4B2A\"/><path d=\"M13 6h6v4c2 1 3 3 3 6v21a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V16c0-3 1-5 3-6V6z\" fill=\"#3A2417\"/><rect x=\"9.5\" y=\"20\" width=\"13\" height=\"11\" rx=\"1.5\" fill=\"#C0392B\"/><rect x=\"11.5\" y=\"23.5\" width=\"9\" height=\"2\" rx=\"1\" fill=\"#fff\" opacity=\".9\"/></svg></div><div class=\"pn\">FizzCola Original 1.2L</div><div class=\"psz\">case of 12</div><div class=\"ptr\">PTR \u20b986<span class=\"mrp\">\u20b990</span></div><div class=\"pricerow\"><span class=\"pchip\">\u20b9820<u>/CS</u></span><span class=\"pchip\">\u20b982<u>/PC</u></span></div><div class=\"actrow\"><button class=\"add\">Add<u>10 units</u></button><div class=\"stp\"><span class=\"b\">\u2013</span><span class=\"q\">1</span><span class=\"b\">+</span></div></div></div>\n                <div class=\"pc\"><span class=\"ribbon\">12+2 free</span><div class=\"pthumb\"><svg viewBox=\"0 0 32 44\"><rect x=\"9\" y=\"7\" width=\"14\" height=\"30\" rx=\"3\" fill=\"#2E7D5B\"/><rect x=\"9\" y=\"9.5\" width=\"14\" height=\"2\" fill=\"#fff\" opacity=\".45\"/><rect x=\"9\" y=\"32\" width=\"14\" height=\"2.4\" fill=\"#000\" opacity=\".15\"/><rect x=\"11.5\" y=\"16\" width=\"9\" height=\"9\" rx=\"1.2\" fill=\"#fff\" opacity=\".9\"/><rect x=\"13\" y=\"19\" width=\"6\" height=\"1.8\" rx=\".9\" fill=\"#2E7D5B\"/></svg></div><div class=\"pn\">Sparkle Ginger Ale 300ml</div><div class=\"psz\">case of 24</div><div class=\"ptr\">PTR \u20b956<span class=\"mrp\">\u20b965</span></div><div class=\"pricerow\"><span class=\"pchip\">\u20b9568<u>/CS</u></span><span class=\"pchip\">\u20b956<u>/PC</u></span></div><div class=\"actrow\"><button class=\"add\">Add<u>24 units</u></button><div class=\"stp\"><span class=\"b\">\u2013</span><span class=\"q\">1</span><span class=\"b\">+</span></div></div></div>\n                <div class=\"pc\"><span class=\"ribbon\">Up to 11% off</span><div class=\"pthumb\"><svg viewBox=\"0 0 32 44\"><rect x=\"12\" y=\"2\" width=\"8\" height=\"4\" rx=\"1\" fill=\"#2B6CB0\"/><path d=\"M13 6h6v4l2 3v22a4 4 0 0 1-4 4h-2a4 4 0 0 1-4-4V13l2-3z\" fill=\"#9CC8EF\"/><rect x=\"10\" y=\"20\" width=\"12\" height=\"11\" rx=\"1.5\" fill=\"#fff\" opacity=\".85\"/><rect x=\"12\" y=\"23\" width=\"8\" height=\"2\" rx=\"1\" fill=\"#2B6CB0\"/><path d=\"M13 13h6M13 16h6\" stroke=\"#fff\" stroke-width=\"1\" opacity=\".5\"/></svg></div><div class=\"pn\">AquaPure Water 2L</div><div class=\"psz\">case of 9</div><div class=\"ptr\">PTR \u20b923<span class=\"mrp\">\u20b925</span></div><div class=\"pricerow\"><span class=\"pchip\">\u20b9220<u>/CS</u></span><span class=\"pchip\">\u20b922<u>/PC</u></span></div><div class=\"actrow\"><button class=\"add\">Add<u>9 units</u></button><div class=\"stp\"><span class=\"b\">\u2013</span><span class=\"q\">1</span><span class=\"b\">+</span></div></div></div>\n              </div>\n            </div>\n            <div class=\"botbar\">\n              <div class=\"ci\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.5\"/><circle cx=\"18\" cy=\"20\" r=\"1.5\"/><path d=\"M2 3h3l2.6 13h11\"/><path d=\"M5.4 6h15l-1.5 8H7\"/></svg><span class=\"bdg\">21</span></div>\n              <div class=\"m\">Showing<b>4 of ~180</b></div><span class=\"spacer\"></span>\n              <div class=\"m\">Total<b>\u20b93,100.12</b></div><button class=\"cta\">Check out <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></button>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class=\"callout\"><span class=\"pin\">1</span><p><b>~4 SKUs per screen.</b> A typical 50\u201380 line daily order means endless scroll, search and tap \u2014 the \u201cnicer\u201d UI quietly added work for the highest-volume buyers.</p></div>\n    </div>\n\n    <!-- CLASSIC -->\n    <div>\n      <div class=\"panel-tag tag-classic\"><span class=\"k\">Classic \u00b7 Density</span><span class=\"v\">\u2014 what distributors actually wanted</span></div>\n      <div class=\"app\">\n        <div class=\"chrome\"><span class=\"dot r\"></span><span class=\"dot y\"></span><span class=\"dot g\"></span><div class=\"urlbar\">app.relaydms.io \u00b7 Sale \u203a Create new order</div></div>\n        <div class=\"topbar\">\n          <div class=\"brand\"><span class=\"mk\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 12h13M13 6l6 6-6 6\"/></svg></span>Relay</div>\n          <span class=\"crumb\">Sale \u203a <b>New order</b></span><span class=\"spacer\"></span>\n          <span class=\"mini-switch\"><b>Modern</b><b class=\"act-am\">Classic</b></span>\n          <span class=\"pill-input\">\u2328 Tab to fill</span>\n        </div>\n        <div class=\"body\">\n          <nav class=\"rail\">\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 11l9-8 9 8M5 10v10h14V10\"/></svg></div>\n            <div class=\"nav sel\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.4\"/><circle cx=\"18\" cy=\"20\" r=\"1.4\"/><path d=\"M2 3h3l2.6 13h11\"/><path d=\"M5.4 6h15l-1.5 8H7\"/></svg></div>\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"/><path d=\"M3 9h18M9 4v16\"/></svg></div>\n            <div class=\"nav\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><rect x=\"4\" y=\"3\" width=\"16\" height=\"18\" rx=\"2\"/><path d=\"M8 8h8M8 12h8M8 16h5\"/></svg></div>\n            <div class=\"gap\"></div><span class=\"avatar\">SD</span>\n          </nav>\n          <div class=\"main\">\n            <div class=\"cust\">\n              <span class=\"cc\"><b>R K Groceries</b></span><span class=\"cc\">Direct sales</span><span class=\"cc\">Channel \u00b7 Groceries</span><span class=\"cc\">Deliver <b>04 Aug</b></span><span class=\"edit\">Edit details</span>\n            </div>\n            <div class=\"tabs\">\n              <span class=\"chip am\">Juices</span><span class=\"chip\">All categories \u25be</span><span class=\"chip\">In-scheme only</span><span class=\"spacer\"></span><span class=\"chip\">Cs \u00b7 Pc \u00b7 Oth</span>\n            </div>\n            <div class=\"scroll nopad\">\n              <table>\n                <thead><tr><th>SKU</th><th>Product</th><th class=\"num\">PTR</th><th>Scheme</th><th class=\"num\">Order qty</th><th class=\"num\">Free</th><th class=\"num\">Value \u20b9</th></tr></thead>\n                <tbody>\n                  <tr><td class=\"sku\">ZB-7501</td><td class=\"pname\">Zesti Mango Nectar 500ml</td><td class=\"num\">73.00</td><td class=\"sch\">10+1</td><td class=\"num\"><span class=\"qin focus\">6</span><span class=\"un\">Cs</span></td><td class=\"num free\">0</td><td class=\"num val\">9,600</td></tr>\n                  <tr><td class=\"sku\">ZB-2502</td><td class=\"pname\">FizzCola Original 1.2L</td><td class=\"num\">86.00</td><td class=\"sch\">5%</td><td class=\"num\"><span class=\"qin\">12</span><span class=\"un\">Cs</span></td><td class=\"num free\">0</td><td class=\"num val\">9,840</td></tr>\n                  <tr><td class=\"sku\">ZB-3003</td><td class=\"pname\">Sparkle Ginger Ale 300ml</td><td class=\"num\">56.00</td><td class=\"sch\">12+2</td><td class=\"num\"><span class=\"qin\">25</span><span class=\"un\">Cs</span></td><td class=\"num free\">2</td><td class=\"num val\">6,000</td></tr>\n                  <tr><td class=\"sku\">ZB-2000</td><td class=\"pname\">AquaPure Water 2L</td><td class=\"num\">23.00</td><td class=\"sch\">\u2014</td><td class=\"num\"><span class=\"qin\">8</span><span class=\"un\">Cs</span></td><td class=\"num free\">0</td><td class=\"num val\">1,584</td></tr>\n                  <tr><td class=\"sku\">GL-0712</td><td class=\"pname\">Glow Shampoo Sachet \u00d712</td><td class=\"num\">22.00</td><td class=\"sch\">12+2</td><td class=\"num\"><span class=\"qin\">60</span><span class=\"un\">Pc</span></td><td class=\"num free\">10</td><td class=\"num val\">1,320</td></tr>\n                  <tr><td class=\"sku\">FC-1000</td><td class=\"pname\">FreshClean Detergent 1kg</td><td class=\"num\">110.00</td><td class=\"sch\">50+ \u00b7 8%</td><td class=\"num\"><span class=\"qin\">30</span><span class=\"un\">Pc</span></td><td class=\"num free\">0</td><td class=\"num val\">3,312</td></tr>\n                  <tr><td class=\"sku\">SP-0200</td><td class=\"pname\">SparkBar Dishwash 200g</td><td class=\"num\">25.00</td><td class=\"sch\">6+1</td><td class=\"num\"><span class=\"qin\">14</span><span class=\"un\">Pc</span></td><td class=\"num free\">2</td><td class=\"num val\">350</td></tr>\n                  <tr><td class=\"sku\">DT-0250</td><td class=\"pname\">Daily Tea Gold 250g</td><td class=\"num\">132.00</td><td class=\"sch\">\u2014</td><td class=\"num\"><span class=\"qin\">10</span><span class=\"un\">Pc</span></td><td class=\"num free\">0</td><td class=\"num val\">1,320</td></tr>\n                  <tr><td class=\"sku\">DT-0500</td><td class=\"pname\">Daily Tea Gold 500g</td><td class=\"num\">255.00</td><td class=\"sch\">Slab 20+</td><td class=\"num\"><span class=\"qin\">20</span><span class=\"un\">Pc</span></td><td class=\"num free\">1</td><td class=\"num val\">5,100</td></tr>\n                  <tr><td class=\"sku\">CB-0035</td><td class=\"pname\">ChocoBite Wafer 35g</td><td class=\"num\">10.00</td><td class=\"sch\">24+3</td><td class=\"num\"><span class=\"qin\">48</span><span class=\"un\">Pc</span></td><td class=\"num free\">6</td><td class=\"num val\">480</td></tr>\n                  <tr><td class=\"sku\">PC-0200</td><td class=\"pname\">Pure Coconut Oil 200ml</td><td class=\"num\">104.00</td><td class=\"sch\">\u2014</td><td class=\"num\"><span class=\"qin\">8</span><span class=\"un\">Pc</span></td><td class=\"num free\">0</td><td class=\"num val\">832</td></tr>\n                  <tr><td class=\"sku\">PC-0500</td><td class=\"pname\">Pure Coconut Oil 500ml</td><td class=\"num\">228.00</td><td class=\"sch\">10+1</td><td class=\"num\"><span class=\"qin\">11</span><span class=\"un\">Pc</span></td><td class=\"num free\">1</td><td class=\"num val\">2,508</td></tr>\n                </tbody>\n              </table>\n              <div class=\"pager\">1\u201312 of 184 SKUs \u00b7 \u2039 \u203a</div>\n            </div>\n            <div class=\"botbar\">\n              <div class=\"ci\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"20\" r=\"1.5\"/><circle cx=\"18\" cy=\"20\" r=\"1.5\"/><path d=\"M2 3h3l2.6 13h11\"/><path d=\"M5.4 6h15l-1.5 8H7\"/></svg><span class=\"bdg\">21</span></div>\n              <div class=\"m\">Lines \u00b7 Free<b>12 \u00b7 14</b></div><span class=\"spacer\"></span>\n              <div class=\"m\">Total<b>\u20b93,100.12</b></div><button class=\"cta am\">Place order <svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M5 12h13M13 6l6 6-6 6\"/></svg></button>\n            </div>\n          </div>\n        </div>\n      </div>\n      <div class=\"callout am\"><span class=\"pin\">2</span><p><b>40+ SKUs visible, totals always in frame.</b> Keyboard tab-through, inline scheme math, Cs/Pc/Oth in one cell \u2014 the muscle memory distributors built in Excel, kept intact.</p></div>\n    </div>\n\n  </div>\n\n  <div class=\"lesson\">\n    <div class=\"lesson-bar\"></div>\n    <div class=\"lesson-in\">\n      <div class=\"num\">04 \u00b7 Where we got it wrong</div>\n      <div><h3>\u201cFeature parity\u201d is not \u201cworkflow parity.\u201d</h3>\n      <p>We matched the legacy DMS feature-for-feature and assumed a cleaner interface was an upgrade. The Cavin Kare pilot proved the opposite: for power users entering large daily orders, <b>density is the feature</b>. The fix shipped <b>both</b> renderings of Create New Order \u2014 a simplified default and a Classic mode \u2014 instead of forcing one paradigm on every user.</p></div>\n    </div>\n  </div>\n\n  <p class=\"foot\">Medium-fidelity wireframe \u00b7 recreated for portfolio use, not an actual Salescode.ai product screen \u00b7 fictional brand, catalog and outlets \u00b7 withheld under NDA \u00b7 Prarthana Dalai</p>\n\n</div>\n</body>\n</html>\n";</script>
 
-    <header class="case-hero" data-reveal>
-      <span class="case-hero__num">01</span>
-      <div class="case-hero__main">
-        <span class="case-hero__category">distributor-management-system.case</span>
-        <h1 class="case-hero__title">Distributor <em>Management</em> System</h1>
-        <p class="case-hero__deck">
-          Built and shipped a modern DMS to replace legacy workflows &mdash; designed for distributor operations,
-          admin governance, and finance compliance. Adopted by four enterprise customers in the first year.
-        </p>
-        <dl class="meta-grid">
-          <div><dt>Role</dt><dd>Product Manager · 0→1 owner</dd></div>
-          <div><dt>Timeline</dt><dd>Apr 2025 — 2026</dd></div>
-          <div><dt>Team</dt><dd>2 designers · 8 engineers · QA</dd></div>
-          <div><dt>Status</dt><dd>Live · 4 enterprise customers</dd></div>
-        </dl>
-      </div>
-    </header>
+  <!-- 05 IMPACT -->
+  <section><div class="col">
+    <div class="slabel">impact · <b>05</b></div>
+    <h2>What actually <em>shipped and stuck.</em></h2>
+    <div class="clients">
+      <span class="client">Coca-Cola</span><span class="client">Cavin Kare</span><span class="client">NIIne</span><span class="client">App Passeo</span>
+    </div>
+    <p class="body">The DMS went live with <b>four enterprise customers</b> in its first year. Manual order tracking dropped <b>30–35%</b>; scheme and sales visibility improved <b>~40%</b>. Most importantly, on the metric I'd chosen up front — orders processed end-to-end in the system — <b>adoption held above target for two consecutive quarters</b> after launch. Not a launch spike. A behaviour that stayed.</p>
+  </div></section>
 
-    <figure class="case-image" data-reveal>
-      <div class="case-image__frame">
-        <img src="../assets/img/dms-project.png" alt="Distributor Management System product screenshot" loading="lazy" />
-      </div>
-      <figcaption class="case-image__cap">
-        <span class="case-image__cap-tag">The product</span>
-        The DMS console &mdash; built workflow-first, with role-based access from day one. Each screen is scoped to admin, sales head, finance, or field rep.
-      </figcaption>
-    </figure>
+  <!-- 06 WHAT'S NEXT -->
+  <section><div class="col">
+    <div class="slabel">what's next · <b>06</b></div>
+    <h2>From a system of record to a <em>system of intelligence.</em></h2>
+    <p class="body">A DMS that records what happened is table stakes. The moat is a DMS that tells you <b>what's about to happen</b>. The roadmap I scoped pushes the product toward AI/ML — and the clearest first bet is <b>outlet attrition prediction</b>.</p>
+    <p class="body">The product thinking matters more than the model. The <b>signal</b> is already in the data we now capture: declining order frequency, shrinking basket value, SKUs an outlet has quietly stopped buying. What the rep <b>sees</b> isn't a dashboard — it's a short, ranked “at-risk outlets” list inside their daily route, each with a one-line <em>why</em>. The <b>guardrail</b> is trust: precision has to be high enough that reps act on the flag instead of learning to ignore it. And the way I'd <b>measure</b> it isn't model accuracy — it's whether flagged outlets get retained versus a holdout, and whether reps actually act on the nudge.</p>
+  </div></section>
 
-    <section class="case-section" data-reveal>
-      <div class="case-section__label">01 · Problem</div>
-      <div class="case-section__body">
-        <h3>Legacy DMS tools didn&rsquo;t fit modern distributor operations.</h3>
-        <p>
-          Salescode.ai had no internal DMS &mdash; but our SFA and eB2B customers were repeatedly asking for one.
-          Existing tools in the market were built for a different era: rigid order flows, no audit trail,
-          minimal governance, and unusable on a phone for field ops.
-        </p>
-        <p><strong>Users:</strong> distributor admins, sales heads, finance teams, and field reps &mdash;
-          mostly non-technical, often working in low-connectivity environments.</p>
-        <p><strong>Pain points:</strong> manual order tracking in spreadsheets, schemes invisible to the field,
-          no clear approval flow, and reconciliation taking days each month.</p>
-        <p><strong>Business objective:</strong> complete the enterprise sales-tech suite, unlock new revenue,
-          and protect existing accounts considering competitors.</p>
-        <p><strong>Constraints:</strong> no domain expertise in-house, parallel SFA roadmap commitments,
-          and a 4-customer rollout target inside the first year.</p>
-      </div>
-    </section>
+  <!-- REFLECTION -->
+  <section><div class="col">
+    <div class="slabel">reflection · <b>07</b></div>
+    <h2>What I'd do <em>differently.</em></h2>
+    <p class="body"><b>Test density earlier.</b> The Cavin Kare lesson was avoidable — I'd put the dense-vs-clean question in front of real distributors weeks sooner, before it was a launch risk.</p>
+    <p class="body"><b>Separate "feature parity" from "workflow parity."</b> Matching the old system's feature list isn't the goal; matching how the work actually flows is. I now treat those as two different specs.</p>
+    <p class="body"><b>Instrument behaviour from day one.</b> Orders-processed was the right headline metric, but I'd add richer drop-off and behavioural signals from the start — so the next "we got it wrong" shows up in the data before it shows up in a pilot.</p>
+  </div></section>
 
-    <section class="case-section" data-reveal>
-      <div class="case-section__label">02 · Approach</div>
-      <div class="case-section__body">
-        <h3>Workflow-first. Role-based. <em>Adoption-led.</em></h3>
-        <ul>
-          <li><strong>Discovery.</strong> Spent four weeks shadowing distributors, sales heads, and finance teams. Mapped real-world order flow, exception patterns, and the spreadsheets people <em>actually</em> used.</li>
-          <li><strong>Prioritization.</strong> Ranked features against two questions &mdash; does it move the adoption metric, and does it survive a finance audit? Cut anything that didn&rsquo;t.</li>
-          <li><strong>Delivery.</strong> Broke the system into shippable slices: orders, schemes, approvals, reporting. Each slice rolled out behind a feature flag and validated with one pilot customer before wider release.</li>
-          <li><strong>Validation.</strong> Defined the adoption metric as <strong>% of orders fully processed in DMS</strong>, not logins. This forced us to fix workflow friction, not vanity metrics.</li>
-        </ul>
-      </div>
-    </section>
+  <!-- SCORECARD -->
+  <section><div class="col">
+    <div class="slabel">the scorecard · <b>08</b></div>
+    <h2>The four questions, <em>answered.</em></h2>
+    <div class="score">
+      <div class="sc"><div class="q">what worked</div><p>Working backward from an <b>ungameable adoption metric</b>, role-first governance, and two honest UI paradigms — adoption stayed above target for two quarters.</p></div>
+      <div class="sc"><div class="q">what didn't</div><p>The clean UI was <b>rejected by power users</b>, and feature-parity made flows too complex. Caught in pilot, not pre-pilot — later than I'd like.</p></div>
+      <div class="sc"><div class="q">what I'd improve</div><p>Earlier density testing, a clear split between <b>feature parity and workflow parity</b>, and behavioural instrumentation from day one.</p></div>
+      <div class="sc"><div class="q">how I'd measure success</div><p>Not logins. <b>Percentage of orders processed end-to-end</b> in the DMS — and, for the AI roadmap, retention lift on flagged outlets vs a holdout.</p></div>
+    </div>
+  </div></section>
 
-    <section class="case-section" data-reveal>
-      <div class="case-section__label">03 · Decisions</div>
-      <div class="case-section__body">
-        <h3>The trade-offs that shaped the product.</h3>
-        <ul>
-          <li><strong>Invoice integrity over editability.</strong> Finance teams wanted free-form edits; we shipped immutable invoices with a corrections log instead. Slower for ops at first, but it survived the first audit cleanly.</li>
-          <li><strong>Role-based by default, not as an add-on.</strong> Every screen was scoped to a role from day one &mdash; admin, sales head, finance, field rep. No &ldquo;view-all&rdquo; backdoors.</li>
-          <li><strong>Phone-first for field, desktop-first for admin.</strong> Two distinct UI paradigms instead of one responsive compromise. Cost more to build; produced two products people actually wanted to use.</li>
-          <li><strong>Adoption metric = orders processed, not logins.</strong> Aligned the team with the customer&rsquo;s real outcome and prevented us from celebrating empty engagement.</li>
-        </ul>
-      </div>
-    </section>
+  <!-- NEXT CASE -->
+  <a class="casenext" href="cart-abandonment.html">
+    <div>
+      <div class="k">next case study · 02 / 03</div>
+      <div class="t">Reducing cart abandonment in quick commerce</div>
+    </div>
+    <span class="arr" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </span>
+  </a>
 
-    <section class="case-section" data-reveal>
-      <div class="case-section__label">04 · Impact</div>
-      <div class="case-section__body">
-        <h3>Live with four enterprise customers in year one.</h3>
-        <p>
-          The DMS is now used by Coca-Cola, Cavin Kare, Nllne, and App Passeo &mdash; supporting onboarding,
-          order management, schemes, and reporting in production. Adoption metrics have held above target
-          for two consecutive quarters.
-        </p>
-        <div class="metrics">
-          <div class="metric">
-            <span class="metric__value">30–35%</span>
-            <span class="metric__label">Reduction in manual tracking</span>
-          </div>
-          <div class="metric">
-            <span class="metric__value">+40%</span>
-            <span class="metric__label">Lift in scheme &amp; sales visibility</span>
-          </div>
-          <div class="metric">
-            <span class="metric__value">4</span>
-            <span class="metric__label">Live enterprise customers</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="case-section" data-reveal>
-      <div class="case-section__label">05 · Next</div>
-      <div class="case-section__body">
-        <h3>From DMS to <em>intelligent</em> distribution.</h3>
-        <p>
-          The roadmap now folds in AI/ML enhancements &mdash; sales forecasting, outlet attrition prediction,
-          and field insights surfaced directly in the rep&rsquo;s daily flow. The thesis: a DMS that
-          tells you <em>what to do next</em> beats one that just records what happened.
-        </p>
-      </div>
-    </section>
-
-    <a class="case-next" href="cart-abandonment.html" data-reveal>
-      <div class="case-next__inner">
-        <span class="case-next__kicker">next case study · 02 / 03</span>
-        <span class="case-next__title">Reducing cart abandonment in quick commerce</span>
-      </div>
-      <span class="case-next__arrow" aria-hidden="true">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
-      </span>
-    </a>
-
-  </div>
-</main>
-
-<footer class="footer">
-  <div class="container footer__inner">
-    <div class="footer__brand">prarthana</div>
-    <nav class="footer__links" aria-label="Footer">
+  <!-- FOOTER -->
+  <footer class="foot"><div class="col">
+    <div class="big serif">Got a hard product problem? <em>Let's talk.</em></div>
+    <a href="../index.html#work">← Back to all work</a>
+    <div class="links">
       <a href="mailto:dalaiprarthana4@gmail.com">Email</a>
-      <a href="https://www.linkedin.com/in/prarthana-dalai-ba931a186/" target="_blank" rel="noopener">LinkedIn</a>
-      <a href="https://www.instagram.com/prar_tha_naa" target="_blank" rel="noopener">Instagram</a>
-      <a href="../assets/resume/Prarthana_Product_Manager.pdf" target="_blank" rel="noopener">Résumé</a>
-    </nav>
-    <p class="footer__meta">© <span data-year>2026</span> · made with care</p>
-  </div>
-</footer>
+      <a href="https://www.linkedin.com/in/prarthana-dalai-pm" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="../index.html">Portfolio home</a>
+    </div>
+    <p style="margin-top:22px;font-size:12px;color:var(--ink-3)">© 2026 · Prarthana Dalai · made with care <span class="flower">✿</span></p>
+  </div></footer>
 
-<script src="../index.js" defer></script>
 </body>
 </html>
