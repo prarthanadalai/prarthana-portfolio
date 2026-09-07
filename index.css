@@ -2710,3 +2710,110 @@ a.kw__name:hover { color: var(--lilac-deep); border-color: var(--lilac); }
   .meta-grid               { grid-template-columns: 1fr; }
   .meta-grid > div         { padding: var(--s-2) var(--s-3); }
 }
+
+/* ============================================================
+   Tool marquee — paper chips on an infinite rail
+   ============================================================ */
+
+.marq { margin-bottom: var(--s-10); }
+
+.marq__label {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: var(--s-4);
+}
+.marq__label::before {
+  content: "→ ";
+  color: var(--lilac);
+}
+
+.marq__viewport {
+  display: flex;
+  gap: var(--s-3);
+  overflow: hidden;
+  padding: var(--s-2) 0;
+  /* fade the rail into the paper at both ends */
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}
+
+.marq__track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-3);
+  flex: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  animation: marq-roll 46s linear infinite;
+}
+.marq__viewport:hover .marq__track { animation-play-state: paused; }
+
+@keyframes marq-roll {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(calc(-100% - var(--s-3)), 0, 0); }
+}
+
+.marq__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+  padding: 10px 18px;
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  white-space: nowrap;
+  box-shadow: var(--shadow-sm);
+  transition: transform var(--dur-2) var(--ease),
+              box-shadow var(--dur-2) var(--ease),
+              color var(--dur-2) var(--ease),
+              background var(--dur-2) var(--ease);
+}
+.marq__chip span {
+  font-size: var(--t-sm);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.marq__chip:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--lilac);
+  background: var(--lilac-tint);
+  color: var(--lilac-deep);
+}
+
+/* every 4th chip picks up a different sticky tint, like the skills pills */
+.marq__chip:nth-child(4n+2):hover { box-shadow: 4px 4px 0 var(--sun);  background: var(--sun-soft);  color: var(--ink); }
+.marq__chip:nth-child(4n+3):hover { box-shadow: 4px 4px 0 var(--rose); background: var(--rose-soft); color: var(--ink); }
+.marq__chip:nth-child(4n+4):hover { box-shadow: 4px 4px 0 var(--mint); background: var(--mint-soft); color: var(--ink); }
+
+.marq__logo {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  fill: currentColor;
+}
+.marq__chip--trio { gap: 8px; }
+.marq__chip--trio .marq__logo { width: 16px; height: 16px; }
+.marq__chip--trio .marq__logo + .marq__logo { margin-left: -2px; }
+.marq__chip--trio span { margin-left: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .marq__track { animation: none; }
+  .marq__viewport {
+    overflow-x: auto;
+    -webkit-mask-image: none;
+            mask-image: none;
+  }
+  .marq__track + .marq__track { display: none; }
+}
+
+@media (max-width: 768px) {
+  .marq__chip { padding: 9px 15px; gap: 8px; }
+  .marq__chip span { font-size: var(--t-xs); }
+  .marq__logo { width: 16px; height: 16px; }
+}
