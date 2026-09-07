@@ -39,6 +39,7 @@
     document.body.classList.add('is-loaded');
     initReveal();
     initCounters();
+    initKindWords();
   };
 
   if (splash && splashDelay > 0) {
@@ -91,6 +92,96 @@
       });
     }, { threshold: 0.4 });
     els.forEach((el) => obs.observe(el));
+  }
+
+  /* ----- Kind words — vertical scroll drives horizontal pan -----
+     Progressive enhancement only. Without this the rail is a plain
+     horizontal scroll container, which is the fallback on mobile,
+     with reduced motion, on short viewports, and with JS disabled. */
+  function initKindWords() {
+    const pin = document.querySelector('[data-kw-pin]');
+    if (!pin) return;
+    const stage = pin.querySelector('[data-kw-stage]');
+    const rail  = pin.querySelector('[data-kw-rail]');
+    const prog  = pin.querySelector('[data-kw-prog]');
+    if (!stage || !rail) return;
+
+    const wide = window.matchMedia('(min-width: 861px)');
+    let pan = 0;
+    let pinned = false;
+    let ticking = false;
+
+    const navH = () =>
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 68;
+
+    const eligible = () => !reduceMotion && wide.matches;
+
+    const unpin = () => {
+      pinned = false;
+      pin.classList.remove('kw--pinned');
+      pin.style.height = '';
+      rail.style.transform = '';
+      if (prog) prog.style.setProperty('--kw-p', '0');
+    };
+
+    const measure = () => {
+      if (!eligible()) { unpin(); return; }
+
+      // Measure the natural (unpinned) overflow first.
+      pin.classList.remove('kw--pinned');
+      pin.style.height = '';
+      const overflow = rail.scrollWidth - rail.clientWidth;
+
+      // Pinned stage is exactly one viewport tall, so it always fits. The only
+      // question is whether the cards themselves fit inside it — if the window
+      // is too short for a card, keep the native scroll rail instead.
+      const avail = window.innerHeight - navH();
+      const roomy = rail.offsetHeight + 48 <= avail;
+
+      // Nothing to pan through — leave it as a normal rail.
+      if (overflow < 48 || !roomy) { unpin(); return; }
+
+      pin.classList.add('kw--pinned');
+      pinned = true;
+      pan = overflow;
+      // Spacer height = one pinned viewport + the horizontal distance to travel.
+      pin.style.height = (avail + pan) + 'px';
+      update();
+    };
+
+    const update = () => {
+      if (!pinned) return;
+      const travel = pin.offsetHeight - stage.offsetHeight;
+      if (travel <= 0) return;
+      const p = Math.min(Math.max((navH() - pin.getBoundingClientRect().top) / travel, 0), 1);
+      rail.style.transform = 'translate3d(' + (-p * pan).toFixed(2) + 'px,0,0)';
+      if (prog) prog.style.setProperty('--kw-p', p.toFixed(4));
+    };
+
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { update(); ticking = false; });
+    };
+
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', measure);
+    if (wide.addEventListener) wide.addEventListener('change', measure);
+
+    // Re-measure when card heights settle (webfonts, images), but guard against
+    // the feedback loop: measure() resizes the rail, which would re-fire this.
+    if ('ResizeObserver' in window) {
+      let lastH = 0;
+      const ro = new ResizeObserver(() => {
+        const h = Math.round(stage.offsetHeight);
+        if (h === lastH) return;
+        lastH = h;
+        requestAnimationFrame(measure);
+      });
+      ro.observe(rail.firstElementChild || rail);
+    }
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
   }
 
   function animateCounter(el) {

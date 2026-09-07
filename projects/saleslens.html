@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saleslens · Project · Prarthana Dalai</title>
+<meta name="description" content="A multi-tenant analytics layer shipped to five enterprise FMCG clients — what was built, the metrics defined per solution, the design and build process, and the readability fix Coca-Cola's data volume forced.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* paper */
+    --paper:#F7F3EB; --paper-2:#FFFCF6; --paper-3:#EDE6D5; --paper-4:#E1D8C2;
+    /* ink */
+    --ink:#1F1A2E; --ink-2:#4A4358; --ink-3:#8B8497; --ink-4:#BAB3C0;
+    /* lilac */
+    --lilac:#7B5FC4; --lilac-deep:#5A3FA8; --lilac-soft:#E5D8F2; --lilac-tint:#F4ECFA;
+    /* sticky tints */
+    --sun:#F5D67D; --sun-soft:#FCEEC2; --rose:#FFB5C5; --rose-soft:#FCDFE7; --mint:#A8D5B8; --mint-soft:#DBEEDF;
+    /* borders */
+    --border:#D9D0BC; --border-soft:#E8E0CB;
+    /* fonts */
+    --font-body:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-italic:'Lora',Georgia,"Times New Roman",serif;
+    --font-mono:'JetBrains Mono',ui-monospace,"SF Mono",Menlo,monospace;
+    --font-hand:'Caveat',"Comic Sans MS",cursive;
+    --shadow-sm:0 1px 2px rgba(31,26,46,.06),0 1px 3px rgba(31,26,46,.04);
+    --shadow-paper:0 1px 0 rgba(31,26,46,.06),0 4px 12px -4px rgba(31,26,46,.10),0 12px 32px -12px rgba(31,26,46,.10);
+    --ease:cubic-bezier(.22,.61,.36,1); --dur-2:360ms;
+    --col:760px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--ink-2);
+    line-height:1.62;-webkit-font-smoothing:antialiased;font-size:17px;letter-spacing:-.01em;
+    font-feature-settings:"ss01","cv11";position:relative;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.16  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .col{max-width:var(--col);margin:0 auto;padding:0 26px;position:relative;z-index:2}
+  .serif{font-family:var(--font-italic)}
+  em,.it{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep)}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(247,243,235,.82);
+    backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1.5px dashed var(--border);}
+  .topbar .row{max-width:1160px;margin:0 auto;padding:14px 26px;display:flex;align-items:center;gap:18px;position:relative;z-index:2}
+  .back{font-size:14px;color:var(--ink);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:7px;transition:color var(--dur-2) var(--ease)}
+  .back:hover{color:var(--lilac-deep)}
+  .topbar .sp{flex:1}
+  .topbar .mark{font-family:var(--font-italic);font-style:italic;font-size:18px;color:var(--ink)}
+  .topbar .cta{font-size:13px;text-decoration:none;color:var(--ink);font-weight:600;background:var(--paper-2);
+    border:1.5px solid var(--ink);padding:7px 16px;border-radius:999px;transition:all var(--dur-2) var(--ease)}
+  .topbar .cta:hover{background:var(--lilac-tint);border-color:var(--lilac);color:var(--lilac-deep)}
+
+  /* hero */
+  .hero{padding:64px 0 26px}
+  .kicker{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:20px}
+  .kicker b{color:var(--lilac-deep);font-weight:600}
+  h1{font-family:var(--font-body);font-weight:700;font-size:clamp(38px,6vw,62px);line-height:1.0;letter-spacing:-.035em;color:var(--ink);text-wrap:balance}
+  h1 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .lede{margin-top:22px;font-size:20px;color:var(--ink-2);line-height:1.55;text-wrap:pretty}
+  .lede b{color:var(--ink);font-weight:600}
+
+  /* meta strip */
+  .meta{max-width:1160px;margin:38px auto 0;padding:0 26px;position:relative;z-index:2}
+  .meta-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);
+    border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  @media(max-width:680px){.meta-in{grid-template-columns:repeat(2,1fr)}}
+  .meta-c{background:var(--paper-2);padding:16px 18px}
+  .meta-c .l{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lilac-deep);font-weight:600}
+  .meta-c .v{font-family:var(--font-body);font-weight:600;font-size:15px;margin-top:6px;line-height:1.35;color:var(--ink)}
+
+  /* tldr */
+  .tldr{max-width:1160px;margin:18px auto 0;padding:0 26px;position:relative;z-index:2}
+  .tldr-in{background:var(--lilac-tint);border:1.5px solid var(--lilac-soft);border-radius:14px;padding:22px 24px;
+    display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+  @media(max-width:680px){.tldr-in{grid-template-columns:1fr}}
+  .tldr .tag{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep);font-size:18px;white-space:nowrap}
+  .tldr p{font-size:16px;color:var(--ink-2);line-height:1.6}
+  .tldr p b{color:var(--ink);font-weight:600}
+
+  /* stat band */
+  .band{max-width:1160px;margin:46px auto;padding:0 26px;position:relative;z-index:2}
+  .band-in{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:760px){.band-in{grid-template-columns:repeat(2,1fr);gap:28px}}
+  .stat .n{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:clamp(30px,3.4vw,46px);line-height:1;color:var(--lilac-deep);letter-spacing:-.02em}
+  .stat .c{margin-top:9px;font-size:13.5px;color:var(--ink-2);line-height:1.4}
+
+  /* section */
+  section{padding:30px 0}
+  .slabel{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:14px}
+  .slabel b{color:var(--lilac-deep);font-weight:600}
+  h2{font-family:var(--font-body);font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.06;letter-spacing:-.03em;margin-bottom:18px;color:var(--ink);text-wrap:balance}
+  h2 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  p.body{font-size:17px;color:var(--ink-2);margin-bottom:16px}
+  p.body b{color:var(--ink);font-weight:600}
+  .body a{color:var(--lilac-deep);border-bottom:1.5px solid var(--lilac);padding-bottom:1px}
+  hr.rule{border:none;border-top:1.5px dashed var(--border);max-width:var(--col);margin:8px auto}
+
+  /* glyph list */
+  ul.glyph{list-style:none;margin:4px 0 18px;display:flex;flex-direction:column;gap:11px}
+  ul.glyph li{position:relative;padding-left:26px;font-size:16.5px;color:var(--ink-2);line-height:1.55}
+  ul.glyph li::before{content:"✦";position:absolute;left:0;top:1px;color:var(--lilac);font-size:14px}
+  ul.glyph li b{color:var(--ink);font-weight:600}
+
+  /* build steps — numbered paper rows */
+  .steps{display:flex;flex-direction:column;gap:0;margin:6px 0 18px;border-top:1.5px dashed var(--border)}
+  .step{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:baseline;padding:18px 2px;border-bottom:1.5px dashed var(--border)}
+  @media(max-width:560px){.step{grid-template-columns:1fr;gap:6px}}
+  .step .n{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:30px;line-height:1;color:var(--lilac);letter-spacing:-.03em}
+  .step h3{font-family:var(--font-body);font-weight:700;font-size:18px;line-height:1.3;color:var(--ink);letter-spacing:-.01em;margin-bottom:5px}
+  .step p{font-size:15.5px;color:var(--ink-2)}
+  .step p b{color:var(--ink);font-weight:600}
+
+  /* decisions */
+  .dlist{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .d{border:1.5px solid var(--ink);background:var(--paper-2);border-radius:14px;padding:20px 22px;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .d:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--lilac)}
+  .d .num{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.10em;color:var(--lilac-deep);font-size:11px;font-weight:600}
+  .d h3{font-family:var(--font-body);font-weight:700;font-size:20px;margin:8px 0;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+  .d p{font-size:15.5px;color:var(--ink-2)}
+  .d p b{color:var(--ink);font-weight:600}
+
+  /* figure — before / after readability */
+  .figure{max-width:var(--col);margin:30px auto;padding:0 26px;position:relative;z-index:2}
+  .ba{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:600px){.ba{grid-template-columns:1fr}}
+  .ba-c{background:var(--paper-2);border:1.5px solid var(--ink);border-radius:14px;padding:20px 22px;box-shadow:var(--shadow-paper)}
+  .ba-c .t{font-family:var(--font-mono);font-size:11px;letter-spacing:.10em;text-transform:uppercase;font-weight:600;margin-bottom:14px}
+  .ba-c--before .t{color:var(--ink-3)}
+  .ba-c--after  .t{color:var(--lilac-deep)}
+  .ba-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1.5px dashed var(--border-soft)}
+  .ba-row:last-child{border-bottom:0}
+  .ba-row .k{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--ink-3)}
+  .ba-c--before .ba-row .v{font-family:var(--font-mono);font-size:14px;color:var(--ink-3);white-space:nowrap;
+    text-decoration:line-through;text-decoration-color:var(--rose);text-decoration-thickness:1.5px}
+  .ba-c--after  .ba-row .v{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:23px;letter-spacing:-.02em;color:var(--lilac-deep);line-height:1}
+  .figure .cap{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);margin-top:16px;text-align:center;letter-spacing:.02em}
+  .figure .cap b{color:var(--ink-2)}
+  .figure .hand{font-family:var(--font-hand);font-size:19px;color:var(--ink);text-align:center;margin-top:8px}
+
+  /* pills — clients & metric names */
+  .clients{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px}
+  .client{font-family:var(--font-body);font-weight:500;font-size:14px;border:1.5px solid var(--ink);background:var(--paper-2);
+    border-radius:999px;padding:7px 16px;color:var(--ink)}
+  .client--soft{border-color:var(--lilac);background:var(--lilac-tint);color:var(--lilac-deep);font-family:var(--font-mono);font-size:12.5px;letter-spacing:.02em}
+
+  /* next item */
+  .casenext{position:relative;z-index:2;max-width:var(--col);margin:40px auto 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+    padding:28px 30px;background:var(--paper-2);border:1.5px solid var(--ink);border-radius:14px;text-decoration:none;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .casenext:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--lilac)}
+  .casenext .k{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--lilac-deep);font-weight:600}
+  .casenext .t{font-family:var(--font-body);font-weight:700;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.02em;line-height:1.12;color:var(--ink);margin-top:6px}
+  .casenext .arr{width:54px;height:54px;display:grid;place-items:center;background:var(--ink);color:var(--paper);border-radius:50%;flex:none;transition:all var(--dur-2) var(--ease)}
+  .casenext:hover .arr{background:var(--lilac);transform:translate(4px,-2px) rotate(-8deg)}
+  @media(max-width:680px){.casenext{grid-template-columns:1fr;padding:20px}.casenext .arr{width:44px;height:44px}}
+
+  /* footer */
+  .foot{border-top:1.5px dashed var(--border);margin-top:40px;padding:40px 0 60px;text-align:center}
+  .foot a{color:var(--lilac-deep);text-decoration:none;font-weight:600;transition:color var(--dur-2) var(--ease)}
+  .foot a:hover{color:var(--ink)}
+  .foot .big{font-family:var(--font-body);font-weight:700;font-size:28px;margin-bottom:14px;color:var(--ink);letter-spacing:-.02em}
+  .foot .big em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .foot .links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:14px}
+  .flower{color:var(--lilac)}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar"><div class="row">
+    <a class="back" href="../index.html">← <span>All work</span></a>
+    <span class="sp"></span>
+    <span class="mark">Prarthana ✿</span>
+    <span class="sp"></span>
+    <a class="cta" href="../index.html#contact">Get in touch</a>
+  </div></div>
+
+  <!-- HERO -->
+  <header class="hero"><div class="col">
+    <div class="kicker">project · <b>02</b> &nbsp;·&nbsp; salescode.ai &nbsp;·&nbsp; b2b fmcg analytics</div>
+    <h1>A live analytics layer,<br>built to be <em>read.</em></h1>
+    <p class="lede">Saleslens is a <b>multi-tenant analytics product</b> I owned and shipped at Salescode.ai — a live, solution-specific dashboard sitting on top of each client's own database. It went live with <b>five enterprise FMCG clients, including Coca-Cola.</b></p>
+  </div></header>
+
+  <!-- META -->
+  <div class="meta"><div class="meta-in">
+    <div class="meta-c"><div class="l">My role</div><div class="v">Associate Product Lead — product owner</div></div>
+    <div class="meta-c"><div class="l">Timeline</div><div class="v">Jan 2024 – Mar 2025 · concept → build</div></div>
+    <div class="meta-c"><div class="l">Team</div><div class="v">Manager, designer &amp; build team</div></div>
+    <div class="meta-c"><div class="l">Status</div><div class="v">Live · 5 enterprise clients</div></div>
+  </div></div>
+
+  <!-- TLDR -->
+  <div class="tldr"><div class="tldr-in">
+    <div class="tag">what it is ✿</div>
+    <p>A dashboard layer for Salescode's three products — <b>SFA, eB2B and DMS</b> — that reads from each client's live database and shows them their own performance. I picked it up as an early-stage initiative from a senior colleague and took it <b>from concept to build completion</b>: metric definitions, product design, user stories, and the build itself.</p>
+  </div></div>
+
+  <!-- STAT BAND -->
+  <div class="band"><div class="band-in">
+    <div class="stat"><div class="n">5</div><div class="c">enterprise clients live, including Coca-Cola</div></div>
+    <div class="stat"><div class="n">3</div><div class="c">solutions instrumented — SFA, eB2B and DMS</div></div>
+    <div class="stat"><div class="n">0→1</div><div class="c">carried from inherited concept to shipped build</div></div>
+    <div class="stat"><div class="n">2</div><div class="c">tiers — core bundled free, advanced as a paid add-on</div></div>
+  </div></div>
+
+  <hr class="rule">
+
+  <!-- 01 THE GAP -->
+  <section><div class="col">
+    <div class="slabel">the gap · <b>01</b></div>
+    <h2>Three products, generating data <em>nobody could see.</em></h2>
+    <p class="body">Salescode sells three things into enterprise FMCG: Sales Force Automation for the field, eB2B for retailer ordering, and a Distributor Management System for the channel. Each one produces a rich transactional trail — orders, visits, retailers, schemes, SKUs.</p>
+    <p class="body">None of it came back to the client. There was <b>no live, solution-specific dashboard wired to their actual database</b>. If a brand manager wanted to know whether eB2B adoption was moving, the answer arrived as a report pulled by hand by a Salescode employee, on request, on a lag.</p>
+    <p class="body">The initiative had been opened up by a senior colleague and then stalled — the appetite was proven, but there was no metric set, no design and no build plan. <b>I picked it up from there and took it to completion.</b></p>
+  </div></section>
+
+  <!-- 02 WHAT I BUILT -->
+  <section><div class="col">
+    <div class="slabel">what I built · <b>02</b></div>
+    <h2>One analytics layer, <em>three</em> distinct dashboards.</h2>
+    <p class="body">Saleslens isn't a single dashboard pointed at everything. It's a multi-tenant layer that renders a different product depending on which Salescode solution the client runs:</p>
+    <ul class="glyph">
+      <li><b>Three solution-specific dashboards</b> — SFA, eB2B and DMS, each with its own metric set rather than a shared generic view.</li>
+      <li><b>Multi-tenant architecture</b> — one product, isolated per client, so a new client is a configuration rather than a rebuild.</li>
+      <li><b>Live database integration</b> — metrics read from the client's own production data, not a nightly export.</li>
+      <li><b>Trend analysis by brand, category and variant</b> — the cuts a brand manager actually acts on, not just headline totals.</li>
+      <li><b>K/M/B number formatting</b> across the metric surface, so figures stay scannable at enterprise data volumes.</li>
+      <li><b>Two-tier packaging</b> — core dashboards bundled free with each solution, advanced features sold as a paid add-on.</li>
+    </ul>
+  </div></section>
+
+  <!-- 03 DECISIONS -->
+  <section><div class="col">
+    <div class="slabel">the decisions · <b>03</b></div>
+    <h2>Four calls that <em>shaped the build.</em></h2>
+    <div class="dlist">
+      <div class="d"><div class="num">decision 01</div><h3>Metrics per solution, not one shared dashboard</h3>
+        <p>The cheap version of this is a single generic dashboard pointed at every database. It ships faster and means less. <b>A DMS client and an eB2B client don't have the same questions</b>, so each solution got its own metric set, defined on its own terms with my manager.</p></div>
+      <div class="d"><div class="num">decision 02</div><h3>Live database, not nightly exports</h3>
+        <p>A dashboard that's a day stale invites the same phone call it was built to replace. We went <b>multi-tenant against each client's live database</b> — the harder architecture, and the reason the Coca-Cola scale problem surfaced at all.</p></div>
+      <div class="d"><div class="num">decision 03</div><h3>I define the structure before a designer touches it</h3>
+        <p>I built the <b>low-fidelity structure in Figma myself</b> — what goes on screen, in what order, at what altitude — then brought in a designer for high-fidelity UX. Handing over an undefined brief spends a designer's craft on decisions that are really product decisions.</p></div>
+      <div class="d"><div class="num">decision 04</div><h3>Core free, advanced as a paid add-on</h3>
+        <p>Visibility into your own data shouldn't sit behind a paywall — it's a <b>necessity layer</b> that makes the products underneath it defensible. Core dashboards shipped bundled with each solution; the deeper analytical features became a separately sold add-on.</p></div>
+    </div>
+  </div></section>
+
+  <!-- 04 THE METRICS -->
+  <section><div class="col">
+    <div class="slabel">defining the measures · <b>04</b></div>
+    <h2>Turning &ldquo;how are we doing&rdquo; into <em>a number.</em></h2>
+    <p class="body">Decision 01 reads as obvious and was the longest part of the work. &ldquo;Show me how we're doing&rdquo; is not a specification. For each solution I had to convert a vague client instinct into a metric with an unambiguous definition.</p>
+    <p class="body">eB2B is the clearest example. Retailer counts are easy to produce and easy to misread — a retailer who installed the app once is not a retailer using it. So the eB2B set separated the funnel:</p>
+    <div class="clients">
+      <span class="client client--soft">retailers onboarded</span>
+      <span class="client client--soft">repeat-order retailers</span>
+      <span class="client client--soft">adopted · 3+ orders</span>
+      <span class="client client--soft">brand ordering trends</span>
+      <span class="client client--soft">category trends</span>
+      <span class="client client--soft">variant trends</span>
+    </div>
+    <p class="body">The definition I'd defend hardest is <b>&ldquo;adopted&rdquo; set at three or more orders</b>. One order is curiosity. Two can be a rep standing over someone's shoulder. Three is a habit forming. Drawing that line means the number can go <em>down</em> in a bad month — which is exactly what makes it worth showing a client.</p>
+  </div></section>
+
+  <!-- 05 DESIGN & BUILD -->
+  <section><div class="col">
+    <div class="slabel">design &amp; build · <b>05</b></div>
+    <h2>From a Figma sketch to a <em>shipped</em> product.</h2>
+    <div class="steps">
+      <div class="step"><span class="n">01</span><div>
+        <h3>Low-fidelity structure, in Figma, by me</h3>
+        <p>I laid out every screen myself first — which metrics appear, in what hierarchy, and what a client sees in the first three seconds. Structure settled before any visual work started.</p>
+      </div></div>
+      <div class="step"><span class="n">02</span><div>
+        <h3>High-fidelity UX with a designer</h3>
+        <p>With the structure fixed, a designer took it to high fidelity. Their time went into <b>craft and interaction</b> rather than into resolving open product questions.</p>
+      </div></div>
+      <div class="step"><span class="n">03</span><div>
+        <h3>User stories written against the metric definitions</h3>
+        <p>Every story carried the exact definition it implemented — including the three-orders rule — so &ldquo;adopted retailers&rdquo; meant one thing to me, the designer and the engineer.</p>
+      </div></div>
+      <div class="step"><span class="n">04</span><div>
+        <h3>Daily check-ins through the build</h3>
+        <p>I ran <b>daily check-ins with the build team</b> across the whole implementation, which is how the Coca-Cola performance issue got caught and turned around inside the build rather than after it.</p>
+      </div></div>
+    </div>
+  </div></section>
+
+  <!-- 06 SCALE -->
+  <section><div class="col">
+    <div class="slabel">the scale problem · <b>06</b></div>
+    <h2>Coca-Cola's data <em>outgrew the screen.</em></h2>
+    <p class="body">Everything held until we pointed Saleslens at Coca-Cola. Their dataset was an order of magnitude past anything else we'd tested, and it broke the product in two ways at once.</p>
+    <p class="body">The first was performance: <b>load times degraded badly</b> under that volume, on the live-database architecture we'd deliberately chosen. The second was subtler. At Coca-Cola's scale the raw figures ran to seven and eight digits, and a tile reading <b>1,204,839</b> is accurate and useless — you can't scan it, and you can't hold two of them in your head at once. We had built a data interpretation product that couldn't be interpreted.</p>
+    <p class="body">I solved both directly: performance optimisation on the query and load path, and <b>K/M/B rounding and formatting</b> applied across the metric surface so magnitude reads instantly while precision stays available where it's needed.</p>
+  </div></section>
+
+  <!-- FIGURE -->
+  <figure class="figure">
+    <div class="ba">
+      <div class="ba-c ba-c--before">
+        <div class="t">before · raw</div>
+        <div class="ba-row"><span class="k">retailers onboarded</span><span class="v">1,204,839</span></div>
+        <div class="ba-row"><span class="k">orders placed</span><span class="v">48,712,065</span></div>
+        <div class="ba-row"><span class="k">order value</span><span class="v">2,940,118,500</span></div>
+      </div>
+      <div class="ba-c ba-c--after">
+        <div class="t">after · formatted</div>
+        <div class="ba-row"><span class="k">retailers onboarded</span><span class="v">1.2M</span></div>
+        <div class="ba-row"><span class="k">orders placed</span><span class="v">48.7M</span></div>
+        <div class="ba-row"><span class="k">order value</span><span class="v">2.94B</span></div>
+      </div>
+    </div>
+    <p class="hand">same data — one of them you can actually scan ✿</p>
+    <figcaption class="cap"><b>Illustrative reconstruction</b> — figures are representative, not production values. The production screens are withheld under NDA.</figcaption>
+  </figure>
+
+  <!-- 07 WHAT SHIPPED -->
+  <section><div class="col">
+    <div class="slabel">what shipped · <b>07</b></div>
+    <h2>Live with five clients, <em>Coca-Cola included.</em></h2>
+    <div class="clients">
+      <span class="client">Coca-Cola</span><span class="client">+ 4 enterprise FMCG clients</span>
+    </div>
+    <p class="body">Saleslens shipped across the SFA, eB2B and DMS solutions and went live with <b>five enterprise clients</b>. Core dashboards were bundled free with each solution; the advanced feature set sold as a <b>paid add-on</b>, making the product a revenue line rather than only a retention play.</p>
+    <p class="body">One honest note on the outcome. <b>This product has no single before/after metric</b>, and inventing one would be dishonest. Before Saleslens, clients had no visibility into their own solution performance at all — the comparison isn't better versus worse, it's <b>nothing versus something</b>. That's what a necessity layer looks like: its value shows up in renewal conversations that run on evidence instead of assurances, and in report requests that stop landing on a human's desk.</p>
+  </div></section>
+
+  <!-- NEXT -->
+  <a class="casenext" href="speak.html">
+    <div>
+      <div class="k">next up · 03 / 03</div>
+      <div class="t">A first-principles teardown of Speak, the AI tutor</div>
+    </div>
+    <span class="arr" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </span>
+  </a>
+
+  <!-- FOOTER -->
+  <footer class="foot"><div class="col">
+    <div class="big serif">Got a hard product problem? <em>Let's talk.</em></div>
+    <a href="../index.html#work">← Back to all work</a>
+    <div class="links">
+      <a href="mailto:dalaiprarthana4@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/prarthana-dalai-pm" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="../index.html">Portfolio home</a>
+    </div>
+    <p style="margin-top:22px;font-size:12px;color:var(--ink-3)">© 2026 · Prarthana Dalai · made with care <span class="flower">✿</span></p>
+  </div></footer>
+
+</body>
+</html>

@@ -1661,6 +1661,269 @@ a.role__company:hover { color: var(--ink); }
 }
 
 /* ============================================================
+   Kind words — horizontal card rail (scroll-pinned on desktop)
+   ============================================================ */
+
+.section--kw { padding-block: clamp(64px, 8vw, 120px) clamp(48px, 6vw, 96px); }
+
+.kw-pin   { position: relative; }
+.kw-stage { position: relative; }
+
+/* The pinned stage must fit under the nav inside the viewport, so this
+   section runs a tighter header rhythm than the rest of the page. */
+.section--kw .section__head { margin-bottom: clamp(var(--s-5), 3vw, var(--s-6)); }
+
+/* Pinned mode — JS adds .kw--pinned and sets .kw-pin height.
+   overflow lives on the sticky element itself, never an ancestor
+   (an ancestor with overflow would kill position: sticky). */
+.kw--pinned .kw-stage {
+  position: sticky;
+  top: var(--nav-h);
+  /* Exactly one viewport tall, cards centred — so the stage always fits
+     under the nav and the pin engages on any desktop height. */
+  height: calc(100vh - var(--nav-h));
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+.kw--pinned .kw-rail {
+  /* No width:max-content — the non-shrinking flex items overflow the box on
+     their own and land at the right offsets. max-content here resolves the
+     items' clamp() against a hypothetical width and inflates the box to ~8800px. */
+  overflow: visible;
+  scroll-snap-type: none;
+  will-change: transform;
+}
+
+/* The rail — native horizontal scroll is the baseline everywhere */
+.kw-rail {
+  display: flex;
+  align-items: stretch;
+  gap: var(--s-5);
+  padding-block: var(--s-3) var(--s-4);
+  /* First card lines up with .container, but the rail runs full-bleed.
+     Must be 100vw, not 100%: in pinned mode the rail is width:max-content,
+     and a percentage would resolve against its own width and run away. */
+  padding-inline: max(var(--gutter), calc((100vw - var(--container)) / 2 + var(--gutter)));
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--lilac-soft) var(--paper-3);
+}
+.kw-rail:focus-visible { outline: 2px solid var(--lilac); outline-offset: 4px; }
+.kw-rail::-webkit-scrollbar { height: 8px; }
+.kw-rail::-webkit-scrollbar-track { background: var(--paper-3); border-radius: 999px; }
+.kw-rail::-webkit-scrollbar-thumb {
+  background: var(--lilac-soft);
+  border: 1px solid var(--lilac);
+  border-radius: 999px;
+}
+
+.kw__item {
+  flex: 0 0 clamp(272px, 29vw, 344px);
+  display: flex;
+  scroll-snap-align: start;
+}
+
+/* Paper card, taped down, straightens into the hard shadow on hover */
+.kw__card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  width: 100%;
+  margin: 0;
+  padding: var(--s-5) var(--s-5) var(--s-4);
+  background: var(--paper-2);
+  border: 1.5px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: var(--shadow-paper);
+  transition: transform var(--dur-2) var(--ease), box-shadow var(--dur-2) var(--ease);
+}
+.kw__card::before {
+  content: "";
+  position: absolute;
+  top: -11px;
+  left: 26px;
+  width: 72px;
+  height: 20px;
+  background: var(--sun);
+  border: 1px solid rgba(31, 26, 46, 0.10);
+  border-radius: 2px;
+  transform: rotate(-3deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+.kw__item:nth-child(3n+2) .kw__card::before { background: var(--mint); }
+.kw__item:nth-child(3n+3) .kw__card::before { background: var(--rose); }
+.kw__card:hover { transform: translate(-2px, -2px); box-shadow: 4px 4px 0 var(--lilac); }
+
+/* Polaroid — same idiom as the hero portrait, card scale */
+.kw__photo {
+  width: 92px;
+  background: var(--paper-2);
+  padding: 7px 7px 24px;
+  border-radius: 4px;
+  box-shadow: var(--shadow-paper);
+  transform: rotate(-3deg);
+  transition: transform var(--dur-3) var(--ease);
+}
+.kw__item:nth-child(even) .kw__photo { transform: rotate(2.4deg); }
+.kw__card:hover .kw__photo { transform: rotate(0deg); }
+
+/* .kw__ph is either an <img> or an initials placeholder span */
+.kw__ph {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 2px;
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 26px;
+  letter-spacing: -0.01em;
+  color: var(--lilac-deep);
+  background: linear-gradient(150deg, var(--lilac-tint), var(--rose-soft));
+}
+img.kw__ph { object-fit: cover; }
+.kw__ph--2 { background: linear-gradient(150deg, var(--mint-soft), var(--lilac-tint)); }
+.kw__ph--3 { background: linear-gradient(150deg, var(--sun-soft),  var(--rose-soft));  }
+.kw__ph--4 { background: linear-gradient(150deg, var(--lilac-soft), var(--sun-soft));  }
+.kw__ph--5 { background: linear-gradient(150deg, var(--lilac-tint), var(--sun-soft));  }
+.kw__ph--6 { background: linear-gradient(150deg, var(--mint-soft), var(--sun-soft));   }
+.kw__ph--7 { background: linear-gradient(150deg, var(--rose-soft), var(--lilac-tint)); }
+
+.kw__cap {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-hand);
+  font-size: 16px;
+  line-height: 1;
+  color: var(--ink);
+  text-align: center;
+}
+
+.kw__quote {
+  margin: 0;
+  font-size: 15.5px;
+  line-height: 1.58;
+  letter-spacing: -0.008em;
+  color: var(--ink);
+  text-wrap: pretty;
+}
+.kw__quote::before {
+  content: "\201C";
+  font-family: var(--font-italic);
+  font-style: italic;
+  font-size: 1.5em;
+  line-height: 0;
+  vertical-align: -0.05em;
+  color: var(--lilac);
+}
+.kw__quote b { font-weight: 700; }
+
+.kw__meta {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+  padding-top: var(--s-4);
+  border-top: 1.5px dashed var(--border);
+}
+.kw__name {
+  font-weight: 700;
+  font-size: var(--t-sm);
+  letter-spacing: -0.015em;
+  color: var(--ink);
+  align-self: flex-start;
+}
+a.kw__name {
+  border-bottom: 1.5px solid var(--lilac-soft);
+  transition: color var(--dur-1) var(--ease), border-color var(--dur-1) var(--ease);
+}
+a.kw__name::after {
+  content: " \2197";
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--lilac);
+}
+a.kw__name:hover { color: var(--lilac-deep); border-color: var(--lilac); }
+
+.kw__role {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.kw__co {
+  font-family: var(--font-mono);
+  font-size: var(--t-2xs);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--lilac-deep);
+}
+.kw__badge {
+  align-self: flex-start;
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: var(--rose-soft);
+  border: 1px solid #E78EA0;
+  color: #B53D58;
+  padding: 3px 8px;
+  border-radius: 999px;
+}
+
+/* "scroll sideways" hint — handwritten, nudges forever */
+.kw-hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: var(--s-3);
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--lilac-deep);
+}
+.kw-hint span {
+  font-family: var(--font-body);
+  font-size: 16px;
+  animation: kw-nudge 1.8s var(--ease) infinite;
+}
+@keyframes kw-nudge {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(6px); }
+}
+
+/* Pan progress — only meaningful while pinned */
+.kw-prog {
+  height: 3px;
+  margin-top: var(--s-2);
+  background: var(--paper-4);
+  border-radius: 999px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity var(--dur-2) var(--ease);
+}
+.kw--pinned .kw-prog { opacity: 1; }
+.kw-prog > span {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--lilac);
+  border-radius: 999px;
+  transform: scaleX(var(--kw-p, 0));
+  transform-origin: left;
+}
+
+/* ============================================================
    Contact
    ============================================================ */
 
@@ -2235,6 +2498,7 @@ a.role__company:hover { color: var(--ink); }
   .case-hero               { grid-template-columns: 1fr; gap: var(--s-3); }
   .honors                  { grid-template-columns: 1fr; gap: var(--s-5); }
   .numbers__grid           { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .kw__item                { flex-basis: clamp(264px, 34vw, 312px); }
 }
 
 /* ============================================================
@@ -2340,6 +2604,14 @@ a.role__company:hover { color: var(--ink); }
   .skills-row__list li     { padding: 7px 12px; font-size: var(--t-xs); }
   .skills-row__list li:hover { transform: translate(-1px, -1px); box-shadow: 2px 2px 0 var(--ink); }
 
+  /* --- Kind words --- */
+  .kw__item                { flex-basis: min(76vw, 300px); }
+  .kw__card                { padding: var(--s-4) var(--s-4) var(--s-3); gap: var(--s-3); }
+  .kw__photo,
+  .kw__item:nth-child(even) .kw__photo { transform: rotate(0deg); }
+  .kw__card:hover          { transform: none; box-shadow: var(--shadow-paper); }
+  .kw-hint                 { font-size: 18px; }
+
   /* --- Contact --- */
   .contact__title          { font-size: clamp(40px, 11vw, 60px); }
   .contact__split          { grid-template-columns: 1fr; gap: var(--s-3); }
@@ -2418,6 +2690,12 @@ a.role__company:hover { color: var(--ink); }
   .honors__list li         { grid-template-columns: 44px 1fr; font-size: var(--t-xs); }
 
   .skills-row__heading     { font-size: var(--t-lg); }
+
+  .kw__item                { flex-basis: min(82vw, 278px); }
+  .kw__photo               { width: 80px; padding: 6px 6px 20px; }
+  .kw__ph                  { font-size: 22px; }
+  .kw__cap                 { font-size: 15px; }
+  .kw__quote               { font-size: var(--t-sm); }
 
   .contact__title          { font-size: clamp(36px, 11vw, 56px); }
 
