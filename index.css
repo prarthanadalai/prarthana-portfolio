@@ -1187,11 +1187,17 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .folder__sticker--rose { background: var(--rose); color: var(--ink); }
 .folder__sticker--sun  { background: var(--sun);  color: var(--ink); }
+.folder__sticker--mint { background: var(--mint); color: var(--ink); }
 
 .folder__body {
   display: flex;
   flex-direction: column;
   gap: var(--s-4);
+}
+.folder__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
 }
 .folder__title {
   font-family: var(--font-body);

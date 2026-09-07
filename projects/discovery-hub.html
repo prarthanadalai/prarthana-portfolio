@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Discovery Hub · Project · Prarthana Dalai</title>
+<meta name="description" content="A Notion discovery system built on real product decisions — a PRD, 20+ interview notes, a RICE table scoring five real DMS calls, and a live Zapier automation that files feedback without manual entry.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Lora:ital,wght@0,400..700;1,400..700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500..700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* paper */
+    --paper:#F7F3EB; --paper-2:#FFFCF6; --paper-3:#EDE6D5; --paper-4:#E1D8C2;
+    /* ink */
+    --ink:#1F1A2E; --ink-2:#4A4358; --ink-3:#8B8497; --ink-4:#BAB3C0;
+    /* lilac */
+    --lilac:#7B5FC4; --lilac-deep:#5A3FA8; --lilac-soft:#E5D8F2; --lilac-tint:#F4ECFA;
+    /* sticky tints */
+    --sun:#F5D67D; --sun-soft:#FCEEC2; --rose:#FFB5C5; --rose-soft:#FCDFE7; --mint:#A8D5B8; --mint-soft:#DBEEDF;
+    /* borders */
+    --border:#D9D0BC; --border-soft:#E8E0CB;
+    /* fonts */
+    --font-body:'Plus Jakarta Sans',ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+    --font-italic:'Lora',Georgia,"Times New Roman",serif;
+    --font-mono:'JetBrains Mono',ui-monospace,"SF Mono",Menlo,monospace;
+    --font-hand:'Caveat',"Comic Sans MS",cursive;
+    --shadow-sm:0 1px 2px rgba(31,26,46,.06),0 1px 3px rgba(31,26,46,.04);
+    --shadow-paper:0 1px 0 rgba(31,26,46,.06),0 4px 12px -4px rgba(31,26,46,.10),0 12px 32px -12px rgba(31,26,46,.10);
+    --ease:cubic-bezier(.22,.61,.36,1); --dur-2:360ms;
+    --col:760px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:80px}
+  body{font-family:var(--font-body);background:var(--paper);color:var(--ink-2);
+    line-height:1.62;-webkit-font-smoothing:antialiased;font-size:17px;letter-spacing:-.01em;
+    font-feature-settings:"ss01","cv11";position:relative;overflow-x:hidden}
+  body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opacity:.04;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.08  0 0 0 0 0.16  0 0 0 0.6 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+  .col{max-width:var(--col);margin:0 auto;padding:0 26px;position:relative;z-index:2}
+  .serif{font-family:var(--font-italic)}
+  em,.it{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep)}
+
+  /* top bar */
+  .topbar{position:sticky;top:0;z-index:20;background:rgba(247,243,235,.82);
+    backdrop-filter:saturate(140%) blur(12px);-webkit-backdrop-filter:saturate(140%) blur(12px);
+    border-bottom:1.5px dashed var(--border);}
+  .topbar .row{max-width:1160px;margin:0 auto;padding:14px 26px;display:flex;align-items:center;gap:18px;position:relative;z-index:2}
+  .back{font-size:14px;color:var(--ink);text-decoration:none;font-weight:600;display:flex;align-items:center;gap:7px;transition:color var(--dur-2) var(--ease)}
+  .back:hover{color:var(--lilac-deep)}
+  .topbar .sp{flex:1}
+  .topbar .mark{font-family:var(--font-italic);font-style:italic;font-size:18px;color:var(--ink)}
+  .topbar .cta{font-size:13px;text-decoration:none;color:var(--ink);font-weight:600;background:var(--paper-2);
+    border:1.5px solid var(--ink);padding:7px 16px;border-radius:999px;transition:all var(--dur-2) var(--ease)}
+  .topbar .cta:hover{background:var(--lilac-tint);border-color:var(--lilac);color:var(--lilac-deep)}
+
+  /* hero */
+  .hero{padding:64px 0 26px}
+  .kicker{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:20px}
+  .kicker b{color:var(--lilac-deep);font-weight:600}
+  h1{font-family:var(--font-body);font-weight:700;font-size:clamp(38px,6vw,62px);line-height:1.0;letter-spacing:-.035em;color:var(--ink);text-wrap:balance}
+  h1 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .lede{margin-top:22px;font-size:20px;color:var(--ink-2);line-height:1.55;text-wrap:pretty}
+  .lede b{color:var(--ink);font-weight:600}
+  .tagrow{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px}
+  .tag{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;background:var(--mint-soft);
+    border:1px solid #74B594;color:#2F6843;font-family:var(--font-mono);font-size:11px;font-weight:500;border-radius:999px}
+  .tag--lilac{background:var(--lilac-soft);border-color:var(--lilac);color:var(--lilac-deep)}
+  .tag .dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+  /* meta strip */
+  .meta{max-width:1160px;margin:38px auto 0;padding:0 26px;position:relative;z-index:2}
+  .meta-in{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);
+    border:1px solid var(--border);border-radius:14px;overflow:hidden}
+  @media(max-width:680px){.meta-in{grid-template-columns:repeat(2,1fr)}}
+  .meta-c{background:var(--paper-2);padding:16px 18px}
+  .meta-c .l{font-family:var(--font-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--lilac-deep);font-weight:600}
+  .meta-c .v{font-family:var(--font-body);font-weight:600;font-size:15px;margin-top:6px;line-height:1.35;color:var(--ink)}
+
+  /* tldr */
+  .tldr{max-width:1160px;margin:18px auto 0;padding:0 26px;position:relative;z-index:2}
+  .tldr-in{background:var(--lilac-tint);border:1.5px solid var(--lilac-soft);border-radius:14px;padding:22px 24px;
+    display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+  @media(max-width:680px){.tldr-in{grid-template-columns:1fr}}
+  .tldr .tag2{font-family:var(--font-italic);font-style:italic;color:var(--lilac-deep);font-size:18px;white-space:nowrap}
+  .tldr p{font-size:16px;color:var(--ink-2);line-height:1.6}
+  .tldr p b{color:var(--ink);font-weight:600}
+
+  /* stat band */
+  .band{max-width:1160px;margin:46px auto;padding:0 26px;position:relative;z-index:2}
+  .band-in{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  @media(max-width:760px){.band-in{grid-template-columns:repeat(2,1fr);gap:28px}}
+  .stat .n{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:clamp(30px,3.4vw,46px);line-height:1;color:var(--lilac-deep);letter-spacing:-.02em}
+  .stat .c{margin-top:9px;font-size:13.5px;color:var(--ink-2);line-height:1.4}
+
+  /* section */
+  section{padding:30px 0}
+  .slabel{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--ink-3);font-weight:500;margin-bottom:14px}
+  .slabel b{color:var(--lilac-deep);font-weight:600}
+  h2{font-family:var(--font-body);font-weight:700;font-size:clamp(26px,3.6vw,38px);line-height:1.06;letter-spacing:-.03em;margin-bottom:18px;color:var(--ink);text-wrap:balance}
+  h2 em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  p.body{font-size:17px;color:var(--ink-2);margin-bottom:16px}
+  p.body b{color:var(--ink);font-weight:600}
+  hr.rule{border:none;border-top:1.5px dashed var(--border);max-width:var(--col);margin:8px auto}
+
+  /* glyph list */
+  ul.glyph{list-style:none;margin:4px 0 18px;display:flex;flex-direction:column;gap:11px}
+  ul.glyph li{position:relative;padding-left:26px;font-size:16.5px;color:var(--ink-2);line-height:1.55}
+  ul.glyph li::before{content:"✦";position:absolute;left:0;top:1px;color:var(--lilac);font-size:14px}
+  ul.glyph li b{color:var(--ink);font-weight:600}
+
+  /* the four pieces — paper cards */
+  .dlist{display:flex;flex-direction:column;gap:14px;margin-top:8px}
+  .d{border:1.5px solid var(--ink);background:var(--paper-2);border-radius:14px;padding:20px 22px;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .d:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--lilac)}
+  .d .num{font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.10em;color:var(--lilac-deep);font-size:11px;font-weight:600}
+  .d h3{font-family:var(--font-body);font-weight:700;font-size:20px;margin:8px 0;line-height:1.25;color:var(--ink);letter-spacing:-.01em}
+  .d p{font-size:15.5px;color:var(--ink-2)}
+  .d p b{color:var(--ink);font-weight:600}
+
+  /* zap flow figure */
+  .figure{max-width:var(--col);margin:30px auto;padding:0 26px;position:relative;z-index:2}
+  .zap{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;gap:14px}
+  @media(max-width:680px){.zap{grid-template-columns:1fr;gap:10px}.zap .arr{transform:rotate(90deg)}}
+  .zap-c{background:var(--paper-2);border:1.5px solid var(--ink);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow-paper)}
+  .zap-c--mid{background:var(--lilac-tint);border-color:var(--lilac)}
+  .zap-c .l{font-family:var(--font-mono);font-size:10px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-3);margin-bottom:7px}
+  .zap-c--mid .l{color:var(--lilac-deep)}
+  .zap-c .v{font-family:var(--font-body);font-weight:700;font-size:16px;color:var(--ink);line-height:1.25;letter-spacing:-.01em}
+  .zap-c--mid .v{color:var(--lilac-deep)}
+  .zap .arr{font-family:var(--font-mono);font-size:20px;color:var(--lilac);text-align:center;line-height:1}
+  .figure .hand{font-family:var(--font-hand);font-size:19px;color:var(--ink);text-align:center;margin-top:16px}
+  .figure .cap{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);margin-top:8px;text-align:center;letter-spacing:.02em}
+  .figure .cap b{color:var(--ink-2)}
+
+  /* rice table */
+  .tablewrap{overflow-x:auto;margin:6px 0 18px;border:1.5px solid var(--ink);border-radius:14px;background:var(--paper-2)}
+  table.rice{width:100%;border-collapse:collapse;min-width:520px}
+  table.rice th,table.rice td{text-align:left;padding:13px 18px;border-bottom:1.5px dashed var(--border-soft);font-size:15px}
+  table.rice tr:last-child td{border-bottom:0}
+  table.rice th{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.10em;text-transform:uppercase;color:var(--lilac-deep);font-weight:600}
+  table.rice td{color:var(--ink-2)}
+  table.rice td:first-child{color:var(--ink);font-weight:600}
+  table.rice td.score{font-family:var(--font-italic);font-style:italic;font-weight:600;font-size:19px;color:var(--lilac-deep);text-align:right;white-space:nowrap}
+  table.rice th:last-child{text-align:right}
+
+  /* pills */
+  .clients{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 18px}
+  .client{font-family:var(--font-body);font-weight:500;font-size:14px;border:1.5px solid var(--ink);background:var(--paper-2);
+    border-radius:999px;padding:7px 16px;color:var(--ink)}
+  .client--soft{border-color:var(--lilac);background:var(--lilac-tint);color:var(--lilac-deep);font-family:var(--font-mono);font-size:12.5px;letter-spacing:.02em}
+
+  /* next item */
+  .casenext{position:relative;z-index:2;max-width:var(--col);margin:40px auto 0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+    padding:28px 30px;background:var(--paper-2);border:1.5px solid var(--ink);border-radius:14px;text-decoration:none;
+    transition:transform var(--dur-2) var(--ease),box-shadow var(--dur-2) var(--ease)}
+  .casenext:hover{transform:translate(-3px,-3px);box-shadow:6px 6px 0 var(--lilac)}
+  .casenext .k{font-family:var(--font-mono);font-size:12.5px;letter-spacing:.08em;color:var(--lilac-deep);font-weight:600}
+  .casenext .t{font-family:var(--font-body);font-weight:700;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.02em;line-height:1.12;color:var(--ink);margin-top:6px}
+  .casenext .arr{width:54px;height:54px;display:grid;place-items:center;background:var(--ink);color:var(--paper);border-radius:50%;flex:none;transition:all var(--dur-2) var(--ease)}
+  .casenext:hover .arr{background:var(--lilac);transform:translate(4px,-2px) rotate(-8deg)}
+  @media(max-width:680px){.casenext{grid-template-columns:1fr;padding:20px}.casenext .arr{width:44px;height:44px}}
+
+  /* footer */
+  .foot{border-top:1.5px dashed var(--border);margin-top:40px;padding:40px 0 60px;text-align:center}
+  .foot a{color:var(--lilac-deep);text-decoration:none;font-weight:600;transition:color var(--dur-2) var(--ease)}
+  .foot a:hover{color:var(--ink)}
+  .foot .big{font-family:var(--font-body);font-weight:700;font-size:28px;margin-bottom:14px;color:var(--ink);letter-spacing:-.02em}
+  .foot .big em{font-family:var(--font-italic);font-style:italic;font-weight:500;color:var(--lilac-deep)}
+  .foot .links{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:18px;font-size:14px}
+  .flower{color:var(--lilac)}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important}
+    html{scroll-behavior:auto}
+  }
+</style>
+</head>
+<body>
+
+  <div class="topbar"><div class="row">
+    <a class="back" href="../index.html">← <span>All work</span></a>
+    <span class="sp"></span>
+    <span class="mark">Prarthana ✿</span>
+    <span class="sp"></span>
+    <a class="cta" href="../index.html#contact">Get in touch</a>
+  </div></div>
+
+  <!-- HERO -->
+  <header class="hero"><div class="col">
+    <div class="kicker">project · <b>04</b> &nbsp;·&nbsp; notion + zapier &nbsp;·&nbsp; discovery tooling</div>
+    <div class="tagrow">
+      <span class="tag"><span class="dot" aria-hidden="true"></span>Self-internship</span>
+      <span class="tag tag--lilac"><span class="dot" aria-hidden="true"></span>Notion + Zapier</span>
+    </div>
+    <h1>A discovery system that <em>runs itself.</em></h1>
+    <p class="lede">The Discovery Hub is a <b>Notion workspace I built to hold real product work</b> — a PRD, notes from 20+ discovery interviews, and a RICE table scoring five decisions I actually made on the Distributor Management System. A <b>live Zapier automation</b> keeps its feedback database filling itself.</p>
+  </div></header>
+
+  <!-- META -->
+  <div class="meta"><div class="meta-in">
+    <div class="meta-c"><div class="l">What it is</div><div class="v">Discovery system + live automation</div></div>
+    <div class="meta-c"><div class="l">Built with</div><div class="v">Notion, Zapier, Google Forms</div></div>
+    <div class="meta-c"><div class="l">Context</div><div class="v">Self-internship · LeepX, week 2</div></div>
+    <div class="meta-c"><div class="l">Source material</div><div class="v">Real DMS decisions &amp; interviews</div></div>
+  </div></div>
+
+  <!-- TLDR -->
+  <div class="tldr"><div class="tldr-in">
+    <div class="tag2">what it is ✿</div>
+    <p>Not a template exercise. <b>Every entry is grounded in real product decisions</b> from my work on the DMS at Salescode.ai — the same interviews, the same trade-offs, scored and structured after the fact. The Zapier automation is a working example, not a claim: submit the form and a Notion row appears.</p>
+  </div></div>
+
+  <!-- STAT BAND -->
+  <div class="band"><div class="band-in">
+    <div class="stat"><div class="n">4</div><div class="c">connected pieces in one Notion workspace</div></div>
+    <div class="stat"><div class="n">20+</div><div class="c">real discovery interviews, written up</div></div>
+    <div class="stat"><div class="n">5</div><div class="c">real DMS decisions scored with RICE</div></div>
+    <div class="stat"><div class="n">0</div><div class="c">manual steps between form and database</div></div>
+  </div></div>
+
+  <hr class="rule">
+
+  <!-- 01 WHY -->
+  <section><div class="col">
+    <div class="slabel">why I built it · <b>01</b></div>
+    <h2>Discovery output is <em>messy</em> by default.</h2>
+    <p class="body">Discovery generates a particular kind of mess: interview notes scattered across documents, decisions made in meetings and never written down, priorities argued rather than scored. The work happens, and then it evaporates. Six months later nobody can reconstruct why a call went the way it did.</p>
+    <p class="body">I wanted a working answer to that in a tool remote teams actually document in. So I built the Discovery Hub in Notion and filled it with <b>my own real material</b> rather than sample data — the interviews I ran and the decisions I made building the Distributor Management System.</p>
+    <p class="body">That constraint is the point. Anyone can populate a Notion template. Structuring your own messy history into something referenceable is the part that's actually hard, and it's the part that proves the skill.</p>
+  </div></section>
+
+  <!-- 02 WHAT'S IN IT -->
+  <section><div class="col">
+    <div class="slabel">what's in it · <b>02</b></div>
+    <h2>Four pieces, <em>connected.</em></h2>
+    <p class="body">The Hub is one workspace with four linked parts, arranged in the order discovery actually moves — interviews, then prioritisation, then a spec, then a loop back for new input:</p>
+    <div class="dlist">
+      <div class="d"><div class="num">piece 01</div><h3>User Interview Notes database</h3>
+        <p>Written-up entries from <b>20+ real discovery interviews</b> with distributors, sales heads and finance teams. Structured so a note can be filtered and cited later, not just read once.</p></div>
+      <div class="d"><div class="num">piece 02</div><h3>RICE prioritisation table</h3>
+        <p>Five real DMS decisions, scored retrospectively on reach, impact, confidence and effort. Scoring calls I'd already made was the honest test — <b>the framework had to agree with what shipped, or explain why it shouldn't have.</b></p></div>
+      <div class="d"><div class="num">piece 03</div><h3>PRD — invoice immutability &amp; corrections log</h3>
+        <p>A full spec for the finance decision I'd defend hardest on the DMS: invoices are <b>immutable, with a corrections log</b>, never free-form edits. Slightly less convenient, dramatically more auditable.</p></div>
+      <div class="d"><div class="num">piece 04</div><h3>Feedback database, wired to Zapier</h3>
+        <p>A live intake table that fills itself from a Google Form. This is the piece that turns the Hub from a document into <b>a system that keeps running</b>.</p></div>
+    </div>
+  </div></section>
+
+  <!-- 03 RICE -->
+  <section><div class="col">
+    <div class="slabel">prioritisation · <b>03</b></div>
+    <h2>Scoring decisions I'd <em>already made.</em></h2>
+    <p class="body">RICE is easy to perform and hard to use honestly. Running it forward on hypothetical features tells you very little. Running it backward on decisions whose outcomes you already know is a real test of whether your inputs were any good.</p>
+    <p class="body">So the table scores five DMS calls I'd already lived with, including the density-versus-polish trade-off that a pilot client pushed back on:</p>
+    <div class="tablewrap">
+      <table class="rice">
+        <thead>
+          <tr><th>Decision</th><th>Why it scored where it did</th><th>Rank</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Classic / density mode</td><td>High reach across every power user, low effort once the data layer existed</td><td class="score">01</td></tr>
+          <tr><td>Invoice immutability</td><td>Narrow reach, but impact and confidence both maximal — finance can't sign off without it</td><td class="score">02</td></tr>
+          <tr><td>Role-based access</td><td>Structural. Cheap on day one, expensive as retrofitted security debt</td><td class="score">03</td></tr>
+          <tr><td>Orders-processed as the adoption metric</td><td>No user-facing reach at all, but it governs every later prioritisation call</td><td class="score">04</td></tr>
+          <tr><td>Phone-first field, desktop-first admin</td><td>Highest effort of the five; justified by two genuinely different jobs</td><td class="score">05</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="body">The interesting result was the density decision landing first. That was the call we got <em>wrong</em> initially — we shipped clean and got pushed back on. Scored properly against reach and effort, it should have been obvious from the start. <b>That's the value of doing this retrospectively: it shows you which instinct to trust next time.</b></p>
+  </div></section>
+
+  <!-- 04 THE AUTOMATION -->
+  <section><div class="col">
+    <div class="slabel">the automation · <b>04</b></div>
+    <h2>A feedback loop with <em>no human</em> in the middle.</h2>
+    <p class="body">The Feedback database is connected to a Google Form through a live Zapier automation. A submission arrives, Zapier fires, and a structured Notion entry appears. There is no copy-paste step and no batching — the loop runs whether I'm looking at it or not.</p>
+  </div></section>
+
+  <!-- FIGURE -->
+  <figure class="figure">
+    <div class="zap">
+      <div class="zap-c">
+        <div class="l">trigger</div>
+        <div class="v">Google Form<br>submission</div>
+      </div>
+      <div class="arr" aria-hidden="true">→</div>
+      <div class="zap-c zap-c--mid">
+        <div class="l">zapier</div>
+        <div class="v">Map fields,<br>fire action</div>
+      </div>
+      <div class="arr" aria-hidden="true">→</div>
+      <div class="zap-c">
+        <div class="l">action</div>
+        <div class="v">New row in<br>Notion Feedback DB</div>
+      </div>
+    </div>
+    <p class="hand">submit it and the row is just… there ✿</p>
+    <figcaption class="cap"><b>The live automation</b> — trigger and action, running without manual intervention.</figcaption>
+  </figure>
+
+  <section><div class="col">
+    <p class="body">The tooling here is deliberately unglamorous. What it demonstrates is <b>trigger-and-action thinking</b>: noticing that two tools don't talk to each other natively, and treating the manual step between them as a defect rather than as work.</p>
+    <p class="body">Remote product roles increasingly assume that instinct. This is a working example of it rather than a line on a skills list.</p>
+  </div></section>
+
+  <!-- 05 THE THROUGH-LINE -->
+  <section><div class="col">
+    <div class="slabel">the through-line · <b>05</b></div>
+    <h2>The same instinct, at a <em>smaller scale.</em></h2>
+    <p class="body">There's one idea underneath most of my product work, and it came out of watching distributors use the DMS:</p>
+    <p class="body" style="font-family:var(--font-italic);font-style:italic;font-size:19px;color:var(--ink);border-left:4px solid var(--lilac);padding:4px 0 4px 22px;margin-bottom:22px">Distributor operators process high volumes of orders, returns and accounting entries every day, so a minimal UI that hides information behind extra clicks and scrolling actually slows them down — density beats polish when speed is the job.</p>
+    <p class="body">The Discovery Hub is that instinct at a much smaller scale. A prettier system that still needed me to copy form responses into Notion by hand would have been the wrong build. <b>Structure that removes manual friction beats structure that looks tidy</b> — the same trade-off, one tool down.</p>
+    <div class="clients">
+      <span class="client client--soft">notion</span>
+      <span class="client client--soft">zapier</span>
+      <span class="client client--soft">google forms</span>
+      <span class="client client--soft">rice scoring</span>
+      <span class="client client--soft">prd writing</span>
+      <span class="client client--soft">discovery interviews</span>
+    </div>
+  </div></section>
+
+  <!-- NEXT -->
+  <a class="casenext" href="dms.html">
+    <div>
+      <div class="k">next case study · 01 / 04</div>
+      <div class="t">A modern DMS for the field, the office, and finance</div>
+    </div>
+    <span class="arr" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
+    </span>
+  </a>
+
+  <!-- FOOTER -->
+  <footer class="foot"><div class="col">
+    <div class="big serif">Got a hard product problem? <em>Let's talk.</em></div>
+    <a href="../index.html#work">← Back to all work</a>
+    <div class="links">
+      <a href="mailto:dalaiprarthana4@gmail.com">Email</a>
+      <a href="https://www.linkedin.com/in/prarthana-dalai-pm" target="_blank" rel="noopener">LinkedIn</a>
+      <a href="../index.html">Portfolio home</a>
+    </div>
+    <p style="margin-top:22px;font-size:12px;color:var(--ink-3)">© 2026 · Prarthana Dalai · made with care <span class="flower">✿</span></p>
+  </div></footer>
+
+</body>
+</html>
