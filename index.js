@@ -29,6 +29,91 @@
     window.addEventListener('scroll', onScroll, { passive: true });
   }
 
+  /* ----- Mobile menu ----- */
+  const navToggle = document.querySelector('[data-nav-toggle]');
+  const navMenu   = document.querySelector('[data-nav-menu]');
+  if (navToggle && navMenu) {
+    // The panel is opaque and covers the page. Anything behind it must leave the
+    // tab order too, or focus walks onto controls the user cannot see.
+    const behind = [document.getElementById('main'), document.querySelector('footer')];
+    const focusables = () =>
+      Array.from(navMenu.querySelectorAll('a[href], button:not([disabled])'));
+
+    const setMenu = (open) => {
+      navMenu.hidden = !open;
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      navToggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      document.body.classList.toggle('nav-open', open);
+      behind.forEach((el) => {
+        if (!el) return;
+        if (open) { el.setAttribute('inert', ''); el.setAttribute('aria-hidden', 'true'); }
+        else      { el.removeAttribute('inert'); el.removeAttribute('aria-hidden'); }
+      });
+      if (open) { const f = focusables(); if (f.length) f[0].focus(); }
+    };
+    navToggle.addEventListener('click', () => {
+      setMenu(navMenu.hidden);
+    });
+    // Any jump closes the menu so the target is actually visible.
+    navMenu.addEventListener('click', (e) => {
+      if (e.target.closest('a')) setMenu(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (navMenu.hidden) return;
+      if (e.key === 'Escape') { setMenu(false); navToggle.focus(); return; }
+      if (e.key !== 'Tab') return;
+      // Cycle: toggle -> first link ... last link -> toggle. The toggle stays in
+      // the loop because it is the only way to close the panel by keyboard.
+      const f = focusables();
+      if (!f.length) return;
+      const first = f[0], last = f[f.length - 1];
+      const on = document.activeElement;
+      if (on === navToggle)            { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && on === first) { e.preventDefault(); navToggle.focus(); }
+      else if (!e.shiftKey && on === last) { e.preventDefault(); navToggle.focus(); }
+    });
+    // Leaving mobile width with the menu open would trap scroll behind a hidden panel.
+    const wide = window.matchMedia('(min-width: 769px)');
+    const onWide = () => { if (wide.matches && !navMenu.hidden) setMenu(false); };
+    if (wide.addEventListener) wide.addEventListener('change', onWide);
+  }
+
+  /* ----- Current section marker in the nav ----- */
+  const navLinks = Array.from(document.querySelectorAll(
+    '.nav__links a[href^="#"], [data-nav-menu] a[href^="#"]'
+  ));
+  if (navLinks.length && 'IntersectionObserver' in window) {
+    const bySection = new Map();
+    navLinks.forEach((a) => {
+      const el = document.querySelector(a.getAttribute('href'));
+      if (!el) return;
+      // Desktop nav and mobile menu both link to the same section — mark both.
+      if (!bySection.has(el)) bySection.set(el, []);
+      bySection.get(el).push(a);
+    });
+    let current = null;
+    const mark = (group) => {
+      if (current === group) return;
+      navLinks.forEach((l) => l.removeAttribute('aria-current'));
+      if (group) group.forEach((l) => l.setAttribute('aria-current', 'true'));
+      current = group;
+    };
+    const visible = new Set();
+    const spy = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) visible.add(en.target);
+        else visible.delete(en.target);
+      });
+      // Topmost visible section wins, so the marker never lags behind the reader.
+      let top = null;
+      visible.forEach((el) => {
+        if (!top || el.getBoundingClientRect().top < top.getBoundingClientRect().top) top = el;
+      });
+      mark(top ? bySection.get(top) : null);
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+    bySection.forEach((_a, el) => spy.observe(el));
+  }
+
   /* ----- Footer year ----- */
   document.querySelectorAll('[data-year]').forEach((el) => {
     el.textContent = new Date().getFullYear();

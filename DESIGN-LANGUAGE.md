@@ -150,7 +150,9 @@ signature of the system:
   rotation, tape/sticker pinned via ::before. Hover straightens + hard shadow.
 - Sticky note (.sticky) — sun/lilac/rose/mint fill, Caveat font, a translucent "tape"
   strip via ::before, random rotation via --sticky-rot.
-- Polaroid — paper frame with bottom-heavy padding (14px 14px 60px), 4/5 image,
+- Polaroid — paper frame with bottom-heavy padding (14px 14px 60px), square image
+  (a real Polaroid image area is square; the source portrait is landscape and a 4/5
+  crop clipped the subject), hairline border so the photo reads against the frame,
   handwritten caption absolutely positioned in the white margin, tilted -3deg.
 - Dashed dividers — section breaks use 1.5px dashed var(--border) rather than solid
   lines (the "notebook" feel).

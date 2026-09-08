@@ -4,6 +4,16 @@
 <script>document.documentElement.classList.add('js');</script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6BZ218WPXX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6BZ218WPXX');
+</script>
+
 <meta name="theme-color" content="#F7F3EB" />
 <meta name="color-scheme" content="light" />
 
@@ -51,10 +61,10 @@
   <div class="nav__inner container">
     <a class="nav__brand" href="#top" aria-label="Prarthana Dalai — home">prarthana</a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="#work">Work</a>
       <a href="#about">About</a>
+      <a href="#skills">What I bring</a>
+      <a href="#work">Work</a>
       <a href="#experience">Experience</a>
-      <a href="#skills">Skills</a>
       <a href="#testimonials">Kind words</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -63,9 +73,27 @@
         Résumé
         <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
       </a>
+      <button class="nav__toggle" type="button" data-nav-toggle
+              aria-expanded="false" aria-controls="nav-menu" aria-label="Open menu">
+        <span class="nav__toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+      </button>
     </div>
   </div>
 </header>
+
+<!-- MOBILE MENU -->
+<div class="navmenu" id="nav-menu" data-nav-menu hidden>
+  <nav class="navmenu__inner" aria-label="Sections">
+    <p class="navmenu__label">jump to</p>
+    <a href="#about"><span class="navmenu__n">01</span> About</a>
+    <a href="#skills"><span class="navmenu__n">02</span> What I bring</a>
+    <a href="#work"><span class="navmenu__n">03</span> Work</a>
+    <a href="#experience"><span class="navmenu__n">04</span> Experience</a>
+    <a href="#testimonials"><span class="navmenu__n">05</span> Kind words</a>
+    <a href="#contact">Contact</a>
+    <a class="navmenu__resume" href="assets/resume/Prarthana_APM.pdf" target="_blank" rel="noopener">Résumé ↗</a>
+  </nav>
+</div>
 
 <main id="main">
 
@@ -132,7 +160,7 @@
             <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg>
           </a>
           <a class="btn btn--ghost" href="#work">
-            Browse my work
+            Jump to the work
             <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
           </a>
         </div>
@@ -177,8 +205,8 @@
           </h2>
         </div>
         <p class="section__deck">
-          A short note on what I do, how I think about product, and where
-          I&rsquo;m most useful on a team.
+          Enterprise B2B and growth-stage B2C, from discovery through rollout. I measure
+          the work by what still gets used after the demo.
         </p>
       </header>
 
@@ -245,28 +273,268 @@
   </section>
 
 
+  <!-- SKILLS -->
+  <section id="skills" class="section">
+    <div class="container">
+
+      <header class="section__head">
+        <div>
+          <span class="section__pg">toolkit · 02</span>
+          <h2 class="section__title">
+            What I bring<br/>
+            <em>to the table.</em>
+          </h2>
+        </div>
+        <p class="section__deck">
+          Certified Scrum Master, five years across SFA, eB2B and distributor systems —
+          and SQL for the answers that aren&rsquo;t already sitting in a dashboard.
+        </p>
+      </header>
+
+
+      <!-- TOOL MARQUEE -->
+      <div class="marq" data-reveal>
+        <p class="marq__label">tools I actually work in</p>
+        <div class="marq__viewport">
+          <ul class="marq__track" aria-label="Tools I work in">
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-ms365"/></svg><span>Microsoft 365</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-gworkspace"/></svg><span>Google Workspace</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-notion"/></svg><span>Notion</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zapier"/></svg><span>Zapier</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-figma"/></svg><span>Figma</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-canva"/></svg><span>Canva</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-miro"/></svg><span>Miro</span></li>
+          <li class="marq__chip marq__chip--trio"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zoom"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-meet"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-teams"/></svg><span>Zoom · Meet · Teams</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-chatgpt"/></svg><span>ChatGPT</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-claude"/></svg><span>Claude</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-lovable"/></svg><span>Lovable</span></li>
+          </ul>
+          <ul class="marq__track" aria-hidden="true">
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-ms365"/></svg><span>Microsoft 365</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-gworkspace"/></svg><span>Google Workspace</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-notion"/></svg><span>Notion</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zapier"/></svg><span>Zapier</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-figma"/></svg><span>Figma</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-canva"/></svg><span>Canva</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-miro"/></svg><span>Miro</span></li>
+          <li class="marq__chip marq__chip--trio"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zoom"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-meet"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-teams"/></svg><span>Zoom · Meet · Teams</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-chatgpt"/></svg><span>ChatGPT</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-claude"/></svg><span>Claude</span></li>
+          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-lovable"/></svg><span>Lovable</span></li>
+          </ul>
+        </div>
+      </div>
+
+      <div data-reveal>
+        <div class="skills-row">
+          <div class="skills-row__head">
+            <h3 class="skills-row__heading">product thinking</h3>
+            <p class="skills-row__intent">deciding what is worth building</p>
+          </div>
+          <div class="skills-row__groups">
+            <div class="skills-group">
+              <h4 class="skills-group__name">discovery</h4>
+              <ul class="skills-row__list">
+                <li>Customer Discovery</li>
+                <li>User Research</li>
+                <li>Competitive Analysis</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">strategy</h4>
+              <ul class="skills-row__list">
+                <li>Product Strategy &amp; Vision</li>
+                <li>0→1 Development</li>
+                <li>Go-to-Market (GTM)</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">planning</h4>
+              <ul class="skills-row__list">
+                <li>Roadmap Ownership</li>
+                <li>Prioritization &amp; Backlog</li>
+                <li>PRDs &amp; User Stories</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="skills-row">
+          <div class="skills-row__head">
+            <h3 class="skills-row__heading">execution</h3>
+            <p class="skills-row__intent">getting it shipped and adopted</p>
+          </div>
+          <div class="skills-row__groups">
+            <div class="skills-group">
+              <h4 class="skills-group__name">with engineering</h4>
+              <ul class="skills-row__list">
+                <li>Engineering Collaboration</li>
+                <li>Agile / Scrum (CSM)</li>
+                <li>Jira</li>
+                <li>Confluence</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">with design</h4>
+              <ul class="skills-row__list">
+                <li>User-Centered Design</li>
+                <li>Figma</li>
+                <li>Adobe XD</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">with everyone else</h4>
+              <ul class="skills-row__list">
+                <li>Cross-functional Collaboration</li>
+                <li>Stakeholder Management</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="skills-row">
+          <div class="skills-row__head">
+            <h3 class="skills-row__heading">evidence</h3>
+            <p class="skills-row__intent">knowing whether it actually worked</p>
+          </div>
+          <div class="skills-row__groups">
+            <div class="skills-group">
+              <h4 class="skills-group__name">measurement</h4>
+              <ul class="skills-row__list">
+                <li>Metrics &amp; KPI Ownership</li>
+                <li>North Star Metrics</li>
+                <li>A/B Testing</li>
+                <li>Cohort Analysis</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">analysis</h4>
+              <ul class="skills-row__list">
+                <li>SQL</li>
+                <li>Data-Driven Decision Making</li>
+                <li>Analytical Problem-Solving</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="skills-row">
+          <div class="skills-row__head">
+            <h3 class="skills-row__heading">ground I know</h3>
+            <p class="skills-row__intent">domains and the day-to-day stack</p>
+          </div>
+          <div class="skills-row__groups">
+            <div class="skills-group">
+              <h4 class="skills-group__name">domains</h4>
+              <ul class="skills-row__list">
+                <li>B2B SaaS</li>
+                <li>Enterprise Software</li>
+                <li>Distributor Management</li>
+                <li>Sales Force Automation</li>
+                <li>AI / ML Products</li>
+              </ul>
+            </div>
+            <div class="skills-group">
+              <h4 class="skills-group__name">daily stack</h4>
+              <ul class="skills-row__list">
+                <li>Notion</li>
+                <li>Zapier</li>
+                <li>Miro</li>
+                <li>AI Tools (Claude · ChatGPT)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
   <!-- WORK -->
   <section id="work" class="section">
     <div class="container">
 
       <header class="section__head">
         <div>
-          <span class="section__pg">selected work · 02</span>
+          <span class="section__pg">selected work · 03</span>
           <h2 class="section__title">
-            Four projects.<br/>
-            <em>Two shipped, two self-set.</em>
+            Easy metrics lie.<br/>
+            <em>I build for the honest one.</em>
           </h2>
         </div>
         <p class="section__deck">
-          Two enterprise 0→1s now running at Coca-Cola, Cavin Kare and more — plus a $1B AI
-          language app torn down to a testable bet, and a discovery system that files its own
-          feedback. Every folder opens to the full write-up, tools included.
+          Two enterprise 0→1s now running at Coca-Cola, Cavin Kare and more. A $1B AI language
+          app torn down to one testable bet. A discovery system that files its own feedback.
+          Each opens to the full method, tools included.
         </p>
       </header>
 
+      <div class="index" data-reveal>
+        <p class="index__label">every project, at a glance</p>
+        <ol class="index__list">
+          <li>
+            <a class="index__link" href="#p-dms">
+              <span class="index__n">01</span>
+              <span class="index__body">
+                <span class="index__name">Distributor Management System</span>
+                <span class="index__out">4 enterprise customers live in year one</span>
+              </span>
+              <span class="index__tags">
+              <span class="index__tag index__tag--1">At Salescode.ai</span>
+              <span class="index__tag index__tag--1">0→1 build</span>
+              <span class="index__tag index__tag--1">B2B FMCG</span>
+              </span>
+              <span class="index__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a class="index__link" href="#p-saleslens">
+              <span class="index__n">02</span>
+              <span class="index__body">
+                <span class="index__name">Saleslens</span>
+                <span class="index__out">5 clients reading their own data live</span>
+              </span>
+              <span class="index__tags">
+              <span class="index__tag index__tag--2">At Salescode.ai</span>
+              <span class="index__tag index__tag--2">Analytics</span>
+              <span class="index__tag index__tag--2">Multi-tenant</span>
+              </span>
+              <span class="index__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a class="index__link" href="#p-speak">
+              <span class="index__n">03</span>
+              <span class="index__body">
+                <span class="index__name">Speak teardown</span>
+                <span class="index__out">A $1B app reduced to one testable bet</span>
+              </span>
+              <span class="index__tags">
+              <span class="index__tag index__tag--3">Self-internship</span>
+              <span class="index__tag index__tag--3">Teardown</span>
+              <span class="index__tag index__tag--3">AI product</span>
+              </span>
+              <span class="index__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+          <li>
+            <a class="index__link" href="#p-discovery">
+              <span class="index__n">04</span>
+              <span class="index__body">
+                <span class="index__name">Discovery Hub</span>
+                <span class="index__out">Discovery structured, feedback filed automatically</span>
+              </span>
+              <span class="index__tags">
+              <span class="index__tag index__tag--4">Self-internship</span>
+              <span class="index__tag index__tag--4">Ops &amp; automation</span>
+              <span class="index__tag index__tag--4">Notion + Zapier</span>
+              </span>
+              <span class="index__go" aria-hidden="true">→</span>
+            </a>
+          </li>
+        </ol>
+      </div>
+
       <div class="folder-grid">
 
-        <article class="folder" data-reveal>
+        <article id="p-dms" class="folder" data-reveal>
           <header class="folder__head">
             <span class="folder__num">01</span>
             <span class="folder__filename">distributor-management-system.case</span>
@@ -317,7 +585,7 @@
         </article>
 
 
-        <article class="folder folder--right" data-reveal>
+        <article id="p-saleslens" class="folder folder--right" data-reveal>
           <header class="folder__head">
             <span class="folder__num">02</span>
             <span class="folder__filename">saleslens-analytics.project</span>
@@ -393,7 +661,7 @@
         </article>
 
 
-        <article class="folder" data-reveal>
+        <article id="p-speak" class="folder" data-reveal>
           <header class="folder__head">
             <span class="folder__num">03</span>
             <span class="folder__filename">speak-teardown.case</span>
@@ -448,7 +716,7 @@
         </article>
 
 
-        <article class="folder folder--right" data-reveal>
+        <article id="p-discovery" class="folder folder--right" data-reveal>
           <header class="folder__head">
             <span class="folder__num">04</span>
             <span class="folder__filename">discovery-hub.project</span>
@@ -520,7 +788,7 @@
       <div class="numbers" data-reveal>
         <div class="numbers__head">
           <h3 class="numbers__title">Other outcomes I <em>own the number on</em>.</h3>
-          <span class="numbers__pg">other · 03</span>
+          <span class="numbers__pg">other work</span>
         </div>
         <div class="numbers__grid">
           <div class="numbers__cell">
@@ -559,7 +827,8 @@
           </h2>
         </div>
         <p class="section__deck">
-          A track record of shipping and rolling out across product and analyst roles.
+          Four roles since 2019, analyst to product manager — building for FMCG, retail,
+          healthcare and luxury clients across the US and beyond.
         </p>
       </header>
 
@@ -678,135 +947,13 @@
   </section>
 
 
-  <!-- SKILLS -->
-  <section id="skills" class="section">
-    <div class="container">
-
-      <header class="section__head">
-        <div>
-          <span class="section__pg">toolkit · 05</span>
-          <h2 class="section__title">
-            What I bring<br/>
-            <em>to the table.</em>
-          </h2>
-        </div>
-        <p class="section__deck">
-          Skills and tools — grouped by what they&rsquo;re for. Hover for a little movement ✿
-        </p>
-      </header>
-
-
-      <!-- TOOL MARQUEE -->
-      <div class="marq" data-reveal>
-        <p class="marq__label">tools I actually work in</p>
-        <div class="marq__viewport">
-          <ul class="marq__track" aria-label="Tools I work in">
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-ms365"/></svg><span>Microsoft 365</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-gworkspace"/></svg><span>Google Workspace</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-notion"/></svg><span>Notion</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zapier"/></svg><span>Zapier</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-figma"/></svg><span>Figma</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-canva"/></svg><span>Canva</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-miro"/></svg><span>Miro</span></li>
-          <li class="marq__chip marq__chip--trio"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zoom"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-meet"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-teams"/></svg><span>Zoom · Meet · Teams</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-chatgpt"/></svg><span>ChatGPT</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-claude"/></svg><span>Claude</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-lovable"/></svg><span>Lovable</span></li>
-          </ul>
-          <ul class="marq__track" aria-hidden="true">
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-ms365"/></svg><span>Microsoft 365</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-gworkspace"/></svg><span>Google Workspace</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-notion"/></svg><span>Notion</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zapier"/></svg><span>Zapier</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-figma"/></svg><span>Figma</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-canva"/></svg><span>Canva</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-miro"/></svg><span>Miro</span></li>
-          <li class="marq__chip marq__chip--trio"><svg class="marq__logo" aria-hidden="true"><use href="#lg-zoom"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-meet"/></svg><svg class="marq__logo" aria-hidden="true"><use href="#lg-teams"/></svg><span>Zoom · Meet · Teams</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-chatgpt"/></svg><span>ChatGPT</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-claude"/></svg><span>Claude</span></li>
-          <li class="marq__chip"><svg class="marq__logo" aria-hidden="true"><use href="#lg-lovable"/></svg><span>Lovable</span></li>
-          </ul>
-        </div>
-      </div>
-
-      <div data-reveal>
-        <div class="skills-row">
-          <h3 class="skills-row__heading">product</h3>
-          <ul class="skills-row__list">
-            <li>Product Strategy &amp; Vision</li>
-            <li>Cross-functional Collaboration</li>
-            <li>Customer Discovery</li>
-            <li>0→1 Development</li>
-            <li>Roadmap Ownership</li>
-            <li>Prioritization &amp; Backlog</li>
-            <li>User-Centered Design</li>
-            <li>Stakeholder Management</li>
-            <li>Go-to-Market (GTM)</li>
-          </ul>
-        </div>
-
-        <div class="skills-row">
-          <h3 class="skills-row__heading">analytics</h3>
-          <ul class="skills-row__list">
-            <li>Data-Driven Decision Making</li>
-            <li>Metrics &amp; KPI Ownership</li>
-            <li>SQL</li>
-            <li>A/B Testing</li>
-            <li>North Star Metrics</li>
-            <li>User Research</li>
-            <li>Cohort Analysis</li>
-            <li>Competitive Analysis</li>
-            <li>Analytical Problem-Solving</li>
-          </ul>
-        </div>
-
-        <div class="skills-row">
-          <h3 class="skills-row__heading">process</h3>
-          <ul class="skills-row__list">
-            <li>PRDs &amp; User Stories</li>
-            <li>Engineering Collaboration</li>
-            <li>Agile / Scrum (CSM)</li>
-            <li>Jira</li>
-            <li>Confluence</li>
-            <li>Figma</li>
-            <li>Adobe XD</li>
-            <li>Notion</li>
-            <li>Zapier</li>
-            <li>AI Tools (Claude · ChatGPT)</li>
-          </ul>
-        </div>
-
-        <div class="skills-row">
-          <h3 class="skills-row__heading">domain</h3>
-          <ul class="skills-row__list">
-            <li>B2B SaaS</li>
-            <li>Enterprise Software</li>
-            <li>Distributor Management</li>
-            <li>Sales Force Automation</li>
-            <li>AI / ML Products</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-
   <!-- KIND WORDS -->
   <section id="testimonials" class="section section--kw">
-
-    <!-- TODO-URL: Akshat Kush has no LinkedIn URL or company yet. To finish, mirror
-         the others: swap <span class="kw__name"> for
-         <a class="kw__name" href="URL" target="_blank" rel="noopener"> and add
-         <span class="kw__co">Company</span> after the role.
-         TODO-PHOTO: every .kw__ph is still an initials placeholder. Replace each
-         <span class="kw__ph kw__ph--N" aria-hidden="true">XX</span> with
-         <img class="kw__ph" src="assets/img/people/<slug>.jpg" alt="Full Name" loading="lazy" /> -->
 
     <div class="container">
       <header class="section__head" data-reveal>
         <div>
-          <span class="section__pg">kind words · 06</span>
+          <span class="section__pg">kind words · 05</span>
           <h2 class="section__title">
             Five people,<br/>
             <em>in their own words.</em>
